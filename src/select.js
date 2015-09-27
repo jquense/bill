@@ -1,11 +1,8 @@
-var React = require('react');
-var ReactDOM = require('react-dom')
-var ReactInstanceMap = require('react/lib/ReactInstanceMap')
-var utils = require('react-addons-test-utils')
-var transform = require('lodash/object/transform')
-var has = require('lodash/object/has')
-var uid = require('lodash/utility/uniqueId')
-var CssSelectorParser = require('css-selector-parser').CssSelectorParser;
+import React from 'react';
+import transform from 'lodash/object/transform';
+import has from 'lodash/object/has';
+import uid from 'lodash/utility/uniqueId';
+import { CssSelectorParser } from 'css-selector-parser';
 
 const PREFIX = 'sub_____';
 
@@ -13,7 +10,6 @@ let parser = new CssSelectorParser();
 
 parser.registerSelectorPseudos('has');
 parser.registerNestingOperators('>');
-//parser.registerAttrEqualityMods('^', '$', '*', '~');
 parser.enableSubstitutes();
 
 let prim = value => {
@@ -22,7 +18,7 @@ let prim = value => {
 }
 
 const PSEUDOS = {
-  has: (rule, valueMap) => {
+  has(rule, valueMap) {
     let compiled = compile(rule.value, valueMap)
     return root => {
       let matches = findAll(root, compiled)
@@ -31,7 +27,7 @@ const PSEUDOS = {
   }
 }
 
-export { parser };
+export let _parser = parser;
 
 export function selector(strings, ...values){
   let valueMap = Object.create(null);

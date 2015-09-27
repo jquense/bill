@@ -1,8 +1,5 @@
-var React = require('react');
-var ReactDOM = require('react-dom')
-var utils = require('react-addons-test-utils')
-
-import { parser, compile, match, selector as s } from './src/select';
+import React from 'react';
+import { _parser, compile, match, selector as s } from './src/select';
 
 chai.use(require('sinon-chai'))
 
@@ -128,7 +125,7 @@ describe('Element Selecting', ()=> {
       let List = ()=>{};
       let { selector, valueMap } = s`div ${List}.foo`;
 
-      ;(() => parser.parse(selector)).should.not.throw()
+      ;(() => _parser.parse(selector)).should.not.throw()
 
       selector.match(/^div sub_____\d\.foo$/).should.be.ok
     })
