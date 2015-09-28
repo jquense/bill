@@ -125,7 +125,7 @@ describe('Element Selecting', ()=> {
       let List = ()=>{};
       let { selector, valueMap } = s`div ${List}.foo`;
 
-      ;(() => _parser.parse(selector)).should.not.throw()
+      ;(() => compile(selector)).should.not.throw()
 
       selector.match(/^div sub_____\d\.foo$/).should.be.ok
     })
@@ -168,7 +168,7 @@ describe('Element Selecting', ()=> {
       ).length.should.equal(1)
     })
 
-    it('should match with prop value substitions', ()=>{
+    it('should match with prop value substitutions', ()=>{
       let date = new Date();
 
       match(s`div[date=${date}].foo`,
