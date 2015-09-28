@@ -49,7 +49,7 @@ export function selector(strings, ...values){
   }
 }
 
-export function match(selector, tree){
+export function match(selector, tree, includeSelf = true){
   let valueMap = Object.create(null);
 
   if (selector.selector) {
@@ -58,7 +58,7 @@ export function match(selector, tree){
   }
   let compiled = compile(selector, valueMap);
 
-  let matches = findAll(tree, compiled, undefined, true)
+  let matches = findAll(tree, compiled, undefined, includeSelf)
   return matches
 }
 
@@ -141,24 +141,28 @@ export function compileRule(rules, parent, values, ast){
 }
 
 function findAll(root, test, getParent = ()=> ({ parent: null }), includeSelf){
-  let children = root.props.children
   let found = [];
+
+  if (!React.isValidElement(root))
+    return found;
+
+  let children = root.props.children
 
   if (React.Children.count(children) === 0)
     return found
 
-  if (includeSelf && React.isValidElement(root) && test(root, getParent)){
+  if (includeSelf && test(root, getParent))
     found.push(root);
-  }
 
   React.Children.forEach(children, child => {
     let parent = ()=> ({ parent: root, getParent });
 
-    if (React.isValidElement(child) && test(child, parent)){
-      found.push(child);
-    }
+    if (React.isValidElement(child)){
+      if (test(child, parent))
+        found.push(child);
 
-    found = found.concat(findAll(child, test, parent, false))
+      found = found.concat(findAll(child, test, parent, false))
+    }
   })
 
   return found
