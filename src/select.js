@@ -169,13 +169,16 @@ function findAll(root, test, getParent = ()=> ({ parent: null }), includeSelf){
 }
 
 function getTagComparer(rule, values) {
+  let isStr = t => typeof t === 'string'
   let tagName = values[rule.tagName] || rule.tagName;
 
   if (rule.tagName === '*')
     return ()=> true
 
-  if (typeof tagName === 'string')
-    return root => root.type.toUpperCase() === tagName.toUpperCase();
+  if (isStr(tagName)){
+    tagName = tagName.toUpperCase();
+    return root => isStr(root.type) && root.type.toUpperCase() === tagName;
+  }
 
   return root => root.type === tagName
 }
