@@ -1,3 +1,10 @@
+v1.0.5 - Mon, 28 Sep 2015 14:56:23 GMT
+--------------------------------------
+
+- [c672b2b](../../commit/c672b2b) [changed] refactor internals to allow customizable selection
+
+
+
 v1.0.4 - Mon, 28 Sep 2015 13:00:45 GMT
 --------------------------------------
 

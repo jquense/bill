@@ -1,6 +1,6 @@
 {
   "name": "bill",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "css selectors for React Elements",
   "main": "lib/index.js",
   "scripts": {
