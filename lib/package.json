@@ -1,0 +1,28 @@
+{
+  "name": "bill",
+  "version": "1.0.5",
+  "description": "css selectors for React Elements",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jquense/bill"
+  },
+  "keywords": [
+    "react",
+    "test",
+    "query"
+  ],
+  "author": "jquense",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jquense/bill/issues"
+  },
+  "homepage": "https://github.com/jquense/bill",
+  "peerDependencies": {
+    "react": ">=0.13.0 ||^0.14.0-alpha1"
+  },
+  "dependencies": {
+    "css-selector-parser": "^1.1.0",
+    "lodash": "^3.10.1"
+  }
+}

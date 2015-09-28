@@ -4,13 +4,7 @@ import has from 'lodash/object/has';
 import uid from 'lodash/utility/uniqueId';
 import { CssSelectorParser } from 'css-selector-parser';
 
-const PREFIX = 'sub_____';
-
 let parser = new CssSelectorParser();
-
-parser.registerSelectorPseudos('has');
-parser.registerNestingOperators('>');
-parser.enableSubstitutes();
 
 let prim = value => {
   let typ = typeof value;
@@ -40,24 +34,36 @@ export function parse(selector){
   }
 }
 
-export function create(options) {
+export function create(options = {}) {
   const NESTING = Object.create(null);
   const PSEUDOS = Object.create(null);
+  const PREFIX = options.prefix || 'sub_____';
 
   let { traverse } = options;
 
   return {
     compile,
     compileRule,
+    selector,
+
     registerNesting(name, fn){
+      if (name !== 'any')
+        parser.registerNestingOperators(name)
       NESTING[name] = fn
     },
+
     registerPseudo(name, fn){
+      parser.registerSelectorPseudos(name)
       PSEUDOS[name] = fn
     }
   }
 
   function compile(selector, values = Object.create(null)){
+    if (selector.selector) {
+      values = selector.valueMap;
+      selector = selector.selector
+    }
+
     let { rules, ast, multiple } = parse(selector);
 
     if (!multiple)
@@ -90,8 +96,13 @@ export function create(options) {
       fns = fns.concat(
         rule.pseudos.map(pseudo => {
           if (!PSEUDOS[pseudo.name])
-            throw new Error('psuedo element: ' + psuedo.name + ' is not supported')
-          return PSEUDOS[pseudo.name](pseudo, values, options)
+            throw new Error('psuedo element: ' + pseudo.name + ' is not supported')
+
+          let pseudoCompiled = pseudo.valueType === 'selector'
+            ? compile(pseudo.value, values)
+            : pseudo
+
+          return PSEUDOS[pseudo.name](pseudoCompiled, values, options)
         })
       )
     }
@@ -107,8 +118,28 @@ export function create(options) {
     }
 
     return fns.reduce((current, next = ()=> true)=> {
-      return (root, parent)=> next(root, parent) && current(root, parent)
+      return (...args)=> next(...args) && current(...args)
     })
+  }
+
+  function selector(strings, ...values){
+    let valueMap = Object.create(null);
+
+    let selector = strings.reduce((rslt, string, idx) => {
+      let noValue = idx >= values.length
+        , value = values[idx]
+        , strValue = '' + value;
+
+      if (!noValue && !prim(value))
+        valueMap[strValue = (PREFIX + uid())] = value;
+
+      return rslt + string + (noValue ? '' : strValue)
+    }, '')
+
+    return {
+      selector,
+      valueMap
+    }
   }
 }
 
