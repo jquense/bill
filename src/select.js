@@ -126,7 +126,7 @@ export function compileRule(rules, parent, values, ast){
 
   if (rule.hasOwnProperty('nestingOperator') ){
     let immediate = rule.nestingOperator === '>'
-    let nestedCompiled = compileRule(rules, rule, ast);
+    let nestedCompiled = compileRule(rules, rule, values, ast);
 
     fns.push((root, parent) => {
       let method = immediate ? directParent : anyParent

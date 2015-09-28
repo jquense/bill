@@ -149,9 +149,21 @@ describe('Element Selecting', ()=> {
       match(s`div ${List}.foo`,
         <div>
           <span>
-            <a className='foo' show/>
+            <a className='foo' show />
           </span>
           <List className='foo'/>
+        </div>
+      ).length.should.equal(1)
+    })
+
+    it('should match with nested tag substitutions', ()=>{
+      let List = ()=> <div/>;
+
+      match(s`${List}.foo > span`,
+        <div>
+          <List className='foo'>
+            <span/>
+          </List>
         </div>
       ).length.should.equal(1)
     })
