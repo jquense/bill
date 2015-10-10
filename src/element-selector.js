@@ -13,8 +13,8 @@ compiler.registerPseudo('has', function(compiledSelector) {
   }
 })
 
-compiler.registerPseudo('dom', isDomElement)
-compiler.registerPseudo('composite', isCompositeElement)
+compiler.registerPseudo('dom', ()=> isDomElement)
+compiler.registerPseudo('composite', ()=> isCompositeElement)
 
 
 compiler.registerNesting('any', test => anyParent.bind(null, test))
