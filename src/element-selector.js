@@ -41,13 +41,7 @@ export function findAll(root, test, includeSelf, getParent = ()=> ({ parent: nul
 
   React.Children.forEach(children, child => {
     let parent = ()=> ({ parent: root, getParent });
-
-    if (React.isValidElement(child)){
-      if (test(child, parent))
-        found.push(child);
-
-      found = found.concat(findAll(child, test, false, parent))
-    }
+    found = found.concat(findAll(child, test, true, parent))
   })
 
   return found
