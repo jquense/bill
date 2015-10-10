@@ -30,17 +30,19 @@ compiler.registerNesting('>', test =>
   (element, inst, parent) => directParent(test, element, parent))
 
 
-function findAll(inst, test, excludeSelf = true, getParent = ()=> ({ parent: null })) {
-  let found = [];
+export function findAll(inst, test, includeSelf, getParent = ()=> ({ parent: null })) {
+  let found = [], publicInst;
 
-  if (!inst || !inst.getPublicInstance)
+  if (!inst )
     return found;
 
-  let publicInst = inst.getPublicInstance()
-    , element = inst._currentElement
+  if (inst.getPublicInstance)
+    publicInst = inst.getPublicInstance()
+
+  var element = inst._currentElement
     , parent = ()=> ({ parent: element, getParent });
 
-  if (!excludeSelf && test(element, inst, getParent))
+  if (includeSelf && test(element, inst, getParent))
     found = found.concat(inst)
 
   if (isDOMComponent(publicInst)) {
@@ -48,13 +50,13 @@ function findAll(inst, test, excludeSelf = true, getParent = ()=> ({ parent: nul
 
     Object.keys(renderedChildren).forEach(key => {
       found = found.concat(
-        findAll(renderedChildren[key], test, false, parent)
+        findAll(renderedChildren[key], test, true, parent)
       );
     })
   }
   else if (isCompositeComponent(publicInst)) {
     found = found.concat(
-      findAll(inst._renderedComponent, test, false, parent)
+      findAll(inst._renderedComponent, test, true, parent)
     );
   }
 
@@ -72,7 +74,7 @@ export function match(selector, inst, includeSelf = true) {
       ? inst._reactInternalComponent
       : ReactInstanceMap.get(inst)
 
-  return findAll(tree, compiler.compile(selector), !includeSelf)
+  return findAll(tree, compiler.compile(selector), includeSelf)
 }
 
 export let { compile, compileRule, selector } = compiler

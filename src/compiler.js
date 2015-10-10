@@ -2,6 +2,7 @@ import React from 'react';
 import transform from 'lodash/object/transform';
 import has from 'lodash/object/has';
 import uid from 'lodash/utility/uniqueId';
+import { isTextElement } from './utils';
 import { CssSelectorParser } from 'css-selector-parser';
 
 let parser = new CssSelectorParser();
@@ -9,6 +10,10 @@ let parser = new CssSelectorParser();
 let prim = value => {
   let typ = typeof value;
   return value === null || ['string', 'number'].indexOf(typ) !== -1
+}
+
+function failText(fn){
+  return (...args) => isTextElement(args[0]) ? false : fn(...args)
 }
 
 export function parse(selector){
@@ -81,16 +86,22 @@ export function create(options = {}) {
     let rule = rules.shift();
 
     if (rule.tagName)
-      fns.push(getTagComparer(rule, values))
+      fns.push(
+        failText(getTagComparer(rule, values))
+      )
 
     if (rule.attrs)
-      fns.push(getPropComparer(rule, values))
+      fns.push(
+        failText(getPropComparer(rule, values))
+      )
 
     if (rule.classNames)
-      fns.push(({ props: { className } }) => {
-        return rule.classNames.every(clsName =>
-          className && className.indexOf(clsName) !== -1)
-      })
+      fns.push(
+        failText(({ props: { className }}) => {
+          return rule.classNames.every(clsName =>
+            className && className.indexOf(clsName) !== -1)
+        })
+      )
 
     if (rule.pseudos) {
       fns = fns.concat(

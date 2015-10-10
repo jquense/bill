@@ -34,10 +34,12 @@ describe('Selecting', ()=> {
       it('should match nested', ()=>{
         match('div a.foo',
           <div>
-           <span>
-             <a className='foo'/>
-           </span>
-           <a className='foo'/>
+            Hello there
+            <span>
+              {'More text Nodes'}
+              <a className='foo'/>
+            </span>
+            <a className='foo'/>
           </div>
         ).length.should.equal(2)
       })
@@ -46,6 +48,7 @@ describe('Selecting', ()=> {
         match('div:has(a.foo, a[show])',
           <div>
             <span>
+              {'More text Nodes'}
               <a show />
             </span>
             <a className='foo'/>
@@ -56,6 +59,7 @@ describe('Selecting', ()=> {
       it('should match nested attributes', ()=>{
         match('div a.foo[show]',
           <div>
+            text node!
             <span>
               <a className='foo' show/>
             </span>

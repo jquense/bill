@@ -1,9 +1,12 @@
 
+export let isTextElement =
+  element => typeof element === 'string'
+
 export let isDomElement =
-  element => typeof element.type === 'string' && element.type.toLowerCase() === element.type
+  element => !isTextElement(element) && typeof element.type === 'string' && element.type.toLowerCase() === element.type
 
 export let isCompositeElement =
-  element => typeof element.type === 'function'
+  element => !isTextElement(element) && typeof element.type === 'function'
 
 export function anyParent(test, element, parentNode){
   do {

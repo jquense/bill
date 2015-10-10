@@ -16,7 +16,6 @@ compiler.registerPseudo('has', function(compiledSelector) {
 compiler.registerPseudo('dom', ()=> isDomElement)
 compiler.registerPseudo('composite', ()=> isCompositeElement)
 
-
 compiler.registerNesting('any', test => anyParent.bind(null, test))
 
 compiler.registerNesting('>', test => directParent.bind(null, test))
@@ -25,13 +24,14 @@ export function match(selector, tree, includeSelf = true){
   return findAll(tree, compiler.compile(selector), includeSelf)
 }
 
-function findAll(root, test, includeSelf, getParent = ()=> ({ parent: null })) {
-  let found = [];
+export function findAll(root, test, includeSelf, getParent = ()=> ({ parent: null })) {
+  let found = [], children = [];
 
-  if (!React.isValidElement(root))
+  if (root == null || root === false)
     return found;
 
-  let children = root.props.children
+  if (React.isValidElement(root))
+    children = root.props.children
 
   if (includeSelf && test(root, getParent))
     found.push(root);
