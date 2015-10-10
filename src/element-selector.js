@@ -2,8 +2,9 @@ import React from 'react';
 import transform from 'lodash/object/transform';
 import has from 'lodash/object/has';
 import { create as createCompiler, parse } from './compiler';
+import { anyParent, directParent, isDomElement, isCompositeElement } from './utils';
 
-let compiler = createCompiler()
+export let compiler = createCompiler()
 
 compiler.registerPseudo('has', function(compiledSelector) {
   return root => {
@@ -12,14 +13,19 @@ compiler.registerPseudo('has', function(compiledSelector) {
   }
 })
 
+compiler.registerPseudo('dom', isDomElement)
+compiler.registerPseudo('composite', isCompositeElement)
+
+
 compiler.registerNesting('any', test => anyParent.bind(null, test))
+
 compiler.registerNesting('>', test => directParent.bind(null, test))
 
 export function match(selector, tree, includeSelf = true){
-  return findAll(tree, compiler.compile(selector), undefined, includeSelf)
+  return findAll(tree, compiler.compile(selector), includeSelf)
 }
 
-function findAll(root, test, getParent = ()=> ({ parent: null }), includeSelf){
+function findAll(root, test, includeSelf, getParent = ()=> ({ parent: null })) {
   let found = [];
 
   if (!React.isValidElement(root))
@@ -27,11 +33,11 @@ function findAll(root, test, getParent = ()=> ({ parent: null }), includeSelf){
 
   let children = root.props.children
 
-  if (React.Children.count(children) === 0)
-    return found
-
   if (includeSelf && test(root, getParent))
     found.push(root);
+
+  if (React.Children.count(children) === 0)
+    return found
 
   React.Children.forEach(children, child => {
     let parent = ()=> ({ parent: root, getParent });
@@ -40,26 +46,9 @@ function findAll(root, test, getParent = ()=> ({ parent: null }), includeSelf){
       if (test(child, parent))
         found.push(child);
 
-      found = found.concat(findAll(child, test, parent, false))
+      found = found.concat(findAll(child, test, false, parent))
     }
   })
 
   return found
 }
-
-function anyParent(test, node, parentNode){
-  do {
-    var { getParent, parent } = parentNode();
-    node = parent
-    parentNode = getParent
-  } while(node && !test(node, test, getParent))
-
-  return !!node
-}
-
-function directParent(test, node, parentNode) {
-  node = parentNode().parent
-  return !!(node && test(node, parentNode().getParent))
-}
-
-export let { compile, compileRule, selector } = compiler

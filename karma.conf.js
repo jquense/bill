@@ -9,7 +9,7 @@ module.exports = function (config) {
     reporters: ['mocha'],
 
     files: [
-      'test.js'
+      'test/index.js'
     ],
 
     port: 9876,
@@ -22,11 +22,11 @@ module.exports = function (config) {
     browsers: ['Chrome'],
 
     preprocessors: {
-      'test.js': ['webpack']
+      'test/index.js': ['webpack']
     },
 
     webpack: {
-      entry: './test.js',
+      entry: 'test/index.js',
       module: {
         loaders: [{ test: /\.js$/, loader: 'babel', exclude: /node_modules/ }]
       }
