@@ -34,10 +34,10 @@ describe('Selecting', ()=> {
       it('should match nested', ()=>{
         match('div a.foo',
           <div>
-            Hello there
+            <span>Hello there</span>
             <span>
               {'More text Nodes'}
-              <a className='foo'/>
+              <a className='foo'>single text node</a>
             </span>
             <a className='foo'/>
           </div>

@@ -46,7 +46,12 @@ export function findAll(inst, test, includeSelf, getParent = ()=> ({ parent: nul
     found = found.concat(inst)
 
   if (isDOMComponent(publicInst)) {
-    let renderedChildren = inst._renderedChildren || {};
+    let renderedChildren = inst._renderedChildren || {}
+      , child = inst._currentElement.props.children;
+
+    if (typeof child === 'string' && test(child, null, parent) ) {
+      found = found.concat(child)
+    }
 
     Object.keys(renderedChildren).forEach(key => {
       found = found.concat(
