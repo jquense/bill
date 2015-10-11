@@ -1,3 +1,10 @@
+v1.4.0 - Sun, 11 Oct 2015 17:14:39 GMT
+--------------------------------------
+
+- [8227089](../../commit/8227089) [added] support Component displayName and inferred functionName
+
+
+
 v1.3.2 - Sat, 10 Oct 2015 16:57:35 GMT
 --------------------------------------
 
