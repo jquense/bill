@@ -101,6 +101,15 @@ describe('create compiler', ()=> {
     selector.match(/^sub_____\d\.foo$/).should.be.ok
   })
 
+  it('should create valid selector as a normal function call', ()=>{
+    let List = ()=>{};
+    let { selector, valueMap } = s(List, '.foo');
+
+    ;(() => compile(selector)).should.not.throw()
+
+    selector.match(/^sub_____\d\.foo$/).should.be.ok
+  })
+
   it('should use == on non interpolated values', ()=>{
     let result = compile(s`a[foo=false]`)
 
@@ -118,6 +127,27 @@ describe('create compiler', ()=> {
     result({ type: 'a', props: { foo: 'false'} }).should.equal(false)
 
     result({ type: 'a', props: { foo: false } }).should.equal(true)
+  })
+
+  it.only('should match inferred name', ()=>{
+    let Klass = ()=>{}
+    let result = compile('Klass.foo')
+
+    result({
+      type: Klass,
+      props: { className: 'foo' }
+    }).should.equal(true)
+  })
+
+  it('should match displayName', ()=>{
+    let Klass = ()=>{}
+    Klass.displayName = 'MyComponent'
+    let result = compile('MyComponent.foo')
+
+    result({
+      type: Klass,
+      props: { className: 'foo' }
+    }).should.equal(true)
   })
 
   it('should match interpolated tagName', ()=>{

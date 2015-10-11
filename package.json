@@ -51,6 +51,7 @@
   },
   "dependencies": {
     "css-selector-parser": "^1.1.0",
+    "fn-name": "^2.0.1",
     "lodash": "^3.10.1"
   },
   "release-script": {

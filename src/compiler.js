@@ -2,10 +2,12 @@ import React from 'react';
 import transform from 'lodash/object/transform';
 import has from 'lodash/object/has';
 import uid from 'lodash/utility/uniqueId';
-import { isTextElement } from './utils';
+import { isTextElement, legacySelector } from './utils';
 import { CssSelectorParser } from 'css-selector-parser';
+import fnName from 'fn-name';
 
 let parser = new CssSelectorParser();
+let name = type => type.displayName || fnName(type) || ''
 
 let prim = value => {
   let typ = typeof value;
@@ -134,6 +136,9 @@ export function create(options = {}) {
   }
 
   function selector(strings, ...values){
+    if (!Array.isArray(strings))
+      [ strings, values ] = legacySelector.apply(null, [strings].concat(values));
+
     let valueMap = Object.create(null);
 
     let selector = strings.reduce((rslt, string, idx) => {
@@ -163,7 +168,9 @@ function getTagComparer(rule, values) {
 
   if (isStr(tagName)){
     tagName = tagName.toUpperCase();
-    return root => isStr(root.type) && root.type.toUpperCase() === tagName;
+    return root => isStr(root.type)
+      ? root.type.toUpperCase() === tagName
+      : name(root.type).toUpperCase() === tagName;
   }
 
   return root => root.type === tagName
