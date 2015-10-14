@@ -42,7 +42,8 @@ export function findAll(inst, test, includeSelf, getParent = ()=> ({ parent: nul
   var element = inst._currentElement
     , parent = ()=> ({ parent: element, getParent });
 
-  if (includeSelf && test(element, inst, getParent))
+  // ReactEmptyComponents (return null render <noscript/>) have null has their element
+  if (includeSelf && element !== null && test(element, inst, getParent))
     found = found.concat(inst)
 
   if (isDOMComponent(publicInst)) {

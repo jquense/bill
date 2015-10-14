@@ -1,6 +1,6 @@
 {
   "name": "bill",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "description": "css selectors for React Elements",
   "main": "index.js",
   "repository": {
@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "css-selector-parser": "^1.1.0",
+    "fn-name": "^2.0.1",
     "lodash": "^3.10.1"
   }
 }

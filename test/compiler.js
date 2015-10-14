@@ -129,7 +129,7 @@ describe('create compiler', ()=> {
     result({ type: 'a', props: { foo: false } }).should.equal(true)
   })
 
-  it.only('should match inferred name', ()=>{
+  it('should match inferred name', ()=>{
     let Klass = ()=>{}
     let result = compile('Klass.foo')
 

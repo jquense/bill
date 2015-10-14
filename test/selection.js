@@ -108,9 +108,11 @@ describe('Selecting', ()=> {
 
       it('should match with nested tag substitutions', ()=>{
         let List = ({ children })=> children;
+        let Empty = React.createClass({ render(){ return null } })
 
         match(s`${List}.foo > span`,
           <div>
+            <Empty/>
             <List className='foo'>
               <span/>
             </List>
