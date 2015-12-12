@@ -1,6 +1,8 @@
 
+let isValidPlainElement = element => typeof element === 'object' && element != null;
+
 export let isTextElement =
-  element => typeof element === 'string'
+  element => !isValidPlainElement(element) && element !== false
 
 export let isDomElement =
   element => !isTextElement(element) && typeof element.type === 'string' && element.type.toLowerCase() === element.type
