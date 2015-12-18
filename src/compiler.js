@@ -79,7 +79,7 @@ export function create(options = {}) {
     return rules
       .map(ruleSet => compileRule(ruleSet, null, values, ast))
       .reduce((current, next)=> {
-        return (root, parent) => current(root, parent) || next(root, parent)
+        return (...args) => current(...args) || next(...args)
       })
   }
 

@@ -2,9 +2,13 @@ import React from 'react';
 import transform from 'lodash/object/transform';
 import has from 'lodash/object/has';
 import { create as createCompiler, parse } from './compiler';
+import common from './common';
+import { createNode, eachChild } from './node';
 import { anyParent, directParent, isDomElement, isCompositeElement } from './utils';
 
 export let compiler = createCompiler()
+
+common(compiler);
 
 compiler.registerPseudo('has', function(compiledSelector) {
   return root => {
@@ -13,36 +17,26 @@ compiler.registerPseudo('has', function(compiledSelector) {
   }
 })
 
-compiler.registerPseudo('dom', ()=> isDomElement)
-compiler.registerPseudo('composite', ()=> isCompositeElement)
-
-compiler.registerNesting('any', test => anyParent.bind(null, test))
-
-compiler.registerNesting('>', test => directParent.bind(null, test))
-
 export function match(selector, tree, includeSelf = true){
   return findAll(tree, compiler.compile(selector), includeSelf)
 }
 
-export function findAll(root, test, includeSelf, getParent = ()=> ({ parent: null })) {
+export function findAll(element, test, includeSelf, parent) {
   let found = [], children = [];
 
-  if (root == null || root === false)
+  if (element == null || element === false)
     return found;
 
-  if (React.isValidElement(root))
-    children = root.props.children
+  var node = createNode(element, parent);
 
-  if (includeSelf && test(root, getParent))
-    found.push(root);
+  if (includeSelf && test(element, node))
+    found.push(element);
 
-  if (React.Children.count(children) === 0)
-    return found
 
-  React.Children.forEach(children, child => {
-    let parent = ()=> ({ parent: root, getParent });
-    found = found.concat(findAll(child, test, true, parent))
-  })
+  if (React.isValidElement(element))
+    eachChild(element, child => {
+      found = found.concat(findAll(child, test, true, node))
+    })
 
   return found
 }

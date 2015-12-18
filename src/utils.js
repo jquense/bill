@@ -1,3 +1,5 @@
+import has from 'lodash/object/has';
+import React from 'react';
 
 let isValidPlainElement = element => typeof element === 'object' && element != null;
 
@@ -10,20 +12,17 @@ export let isDomElement =
 export let isCompositeElement =
   element => !isTextElement(element) && typeof element.type === 'function'
 
-export function anyParent(test, element, parentNode){
-  do {
-    var { getParent, parent } = parentNode();
-    element = parent
-    parentNode = getParent
-  } while(element && !test(element, test, getParent))
 
-  return !!element
-}
+export let isDOMComponent = inst => !!(inst && inst.nodeType === 1 && inst.tagName);
 
-export function directParent(test, element, parentNode) {
-  element = parentNode().parent
-  return !!(element && test(element, parentNode().getParent))
-}
+export let isCompositeComponent = inst => !isDOMComponent(inst) || inst === null
+    || typeof inst.render === 'function' && typeof inst.setState === 'function';
+
+export let isReactInstance = obj =>
+  obj != null &&
+  has(obj, '_currentElement') &&
+  has(obj, '_rootNodeID');
+
 
 export function legacySelector(...args){
   let strings = []

@@ -44,7 +44,7 @@ describe('Selecting', ()=> {
         ).length.should.equal(2)
       })
 
-      it('should work with :has()', ()=> {
+      it(':has()', ()=> {
         match('div:has(a.foo, a[show])',
           <div>
             <span>
@@ -54,6 +54,36 @@ describe('Selecting', ()=> {
             <a className='foo'/>
           </div>
         ).length.should.equal(1)
+      })
+
+      it(':not()', ()=> {
+        match('a:not(.foo)',
+          <div>
+            <span>
+              {'More text Nodes'}
+              <a show />
+            </span>
+            <a className='foo'/>
+          </div>
+        ).length.should.equal(1)
+      })
+
+      it(':first-child', ()=> {
+        match(':first-child',
+          <div>
+            <span><p /></span>
+            <a />
+          </div>
+        ).length.should.equal(2)
+      })
+
+      it(':last-child', ()=> {
+        match(':last-child',
+          <div>
+            <span><p /></span>
+            <a /><p/>
+          </div>
+        ).length.should.equal(2)
       })
 
       it('should match nested attributes', ()=>{
@@ -79,6 +109,28 @@ describe('Selecting', ()=> {
         ).length.should.equal(1)
       })
 
+      it('should match Adjacent siblings', ()=>{
+        match('a.foo + span',
+          <div>
+            <a className='foo'/>
+            <span>
+              <a className='foo' show/>
+            </span>
+          </div>
+        ).length.should.equal(1)
+      })
+
+      it('should match general siblings', ()=>{
+        match('a.foo ~ span',
+          <div>
+            <a className='foo'/>
+            <div />
+            <span>
+              <a className='foo' show/>
+            </span>
+          </div>
+        ).length.should.equal(1)
+      })
 
       it('should use primitive value instead of placeholder', ()=>{
         let List = 'span';

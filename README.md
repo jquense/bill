@@ -45,17 +45,20 @@ matches[0] // { type: List, props }
 
 ### Supported
 
-- classNames
-- `div[propName="hi"]` or `div[boolProp]`
-- `>`: `div > .foo`
-- `:has()`: `div:has(a.foo)`
+- classes: `.foo`
+- attributes: `div[propName="hi"]` or `div[boolProp]`
+- `>`: direct descendent `div > .foo`
+- `+`: adjacent sibling selector
+- `~`: general sibling selector
+- `:has()`: parent selector `div:has(a.foo)`
+- `:not()`: negation
+- `:first-child`
+- `:last-child`
 
 ### Not supported
 
-- sibling selectors
-- pseudo selectors (except for has)
+- most pseudo selectors
 - non string interpolations for anything other than "tag" or prop values
-
 
 ## API
 

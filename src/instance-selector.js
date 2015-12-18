@@ -1,70 +1,50 @@
+import React from 'react';
 import ReactInstanceMap from 'react/lib/ReactInstanceMap';
+import isPlainObject from 'lodash/lang/isPlainObject';
 import { create as createCompiler, parse } from './compiler';
+import common from './common';
+import { createNode, eachChild } from './node';
 import {
     anyParent, directParent
-  , isDomElement, isCompositeElement } from './utils';
-
-
-let isDOMComponent = inst => !!(inst && inst.nodeType === 1 && inst.tagName);
-
-let isCompositeComponent = inst => !isDOMComponent(inst) || inst === null
-  || typeof inst.render === 'function' && typeof inst.setState === 'function';
-
+  , isDomElement, isCompositeElement
+  , isReactInstance, isDOMComponent, isCompositeComponent } from './utils';
 
 export let compiler = createCompiler()
 
+common(compiler);
+
 compiler.registerPseudo('has', function(compiledSelector) {
-  return (_, inst) => {
-    let matches = findAll(inst, compiledSelector)
+  return (_, node) => {
+    let matches = findAll(node.instance, compiledSelector)
     return !!matches.length
   }
 })
 
-compiler.registerPseudo('dom', ()=> isDomElement)
-compiler.registerPseudo('composite', ()=> isCompositeElement)
-
-compiler.registerNesting('any', test =>
-  (element, inst, parent) => anyParent(test, element, parent))
-
-compiler.registerNesting('>', test =>
-  (element, inst, parent) => directParent(test, element, parent))
-
-
-export function findAll(inst, test, includeSelf, getParent = ()=> ({ parent: null })) {
+export function findAll(inst, test, includeSelf, parent) {
   let found = [], publicInst;
 
-  if (!inst )
+  if (!inst)
     return found;
 
   if (inst.getPublicInstance)
     publicInst = inst.getPublicInstance()
 
-  var element = inst._currentElement
-    , parent = ()=> ({ parent: element, getParent });
+  var node = createNode(inst, parent);
 
   // ReactEmptyComponents (return null render <noscript/>) have null has their element
-  if (includeSelf && element !== null && test(element, inst, getParent))
+  if (includeSelf && node.element !== null && test(node.element, node))
     found = found.concat(inst)
 
-  if (isDOMComponent(publicInst)) {
-    let renderedChildren = inst._renderedChildren || {}
-      , child = inst._currentElement.props.children;
+  eachChild(inst, child => {
+    let childNode = createNode(child, node);
 
-    if (typeof child === 'string' && test(child, null, parent) ) {
-      found = found.concat(child)
-    }
+    if (!isReactInstance(child) && test(childNode.element, childNode))
+      return found.push(child)
 
-    Object.keys(renderedChildren).forEach(key => {
-      found = found.concat(
-        findAll(renderedChildren[key], test, true, parent)
-      );
-    })
-  }
-  else if (isCompositeComponent(publicInst)) {
     found = found.concat(
-      findAll(inst._renderedComponent, test, true, parent)
+      findAll(child, test, true, node)
     );
-  }
+  })
 
   return found;
 }
@@ -82,5 +62,6 @@ export function match(selector, inst, includeSelf = true) {
 
   return findAll(tree, compiler.compile(selector), includeSelf)
 }
+
 
 export let { compile, compileRule, selector } = compiler
