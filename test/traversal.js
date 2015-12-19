@@ -7,7 +7,7 @@ let renderIntoDocument = (elements) =>
 
 let c = fn => React.createClass({ render(){ return fn(this.props, this.context) } })
 
-describe.only('instance tree traversal', () => {
+describe('instance tree traversal', () => {
   it('should find all text nodes', ()=> {
     let Example = c(()=> <div className="foo"><span className="bar">textme!</span></div>)
     let inst = renderIntoDocument(<Example />);

@@ -1,10 +1,11 @@
 import has from 'lodash/object/has';
 import React from 'react';
 
-let isValidPlainElement = element => typeof element === 'object' && element != null;
+export let isValidPlainElement =
+  element => typeof element === 'object' && element != null && has(element, 'type');
 
 export let isTextElement =
-  element => !isValidPlainElement(element) && element !== false
+  element => !isValidPlainElement(element) && element !== false && element != null
 
 export let isDomElement =
   element => !isTextElement(element) && typeof element.type === 'string' && element.type.toLowerCase() === element.type

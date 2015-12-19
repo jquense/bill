@@ -1,11 +1,16 @@
 import React from 'react';
 import { create } from '../src/compiler';
+import { isTextElement } from '../src/utils';
 
-let { compile, selector: s } = create()
 
 chai.use(require('sinon-chai'))
 
 describe('create compiler', ()=> {
+  let compile, s, registerPseudo;
+
+  beforeEach(() => {
+    ({ compile, registerPseudo, selector: s } = create())
+  })
 
   it('should return a function', ()=>{
     let result = compile('a.foo')
@@ -35,10 +40,26 @@ describe('create compiler', ()=> {
     }).should.equal(false)
   })
 
+  it('should handle non element values', ()=> {
+    registerPseudo('text', ()=> element => isTextElement(element))
+    let result = compile(':text')
+
+    result({}).should.equal(true)
+    result('hello').should.equal(true)
+    result(500).should.equal(true)
+    result(/regex/).should.equal(true)
+    result([1, 2, 3]).should.equal(true)
+    result(new Date()).should.equal(true)
+    result(true).should.equal(true)
+    result(false).should.equal(false)
+    result(null).should.equal(false)
+  })
+
   it('should match props', ()=>{
     let result = compile('[foo="5"]')
 
     result({
+      type: 'p',
       props: {
         foo: 5
       }
@@ -49,6 +70,7 @@ describe('create compiler', ()=> {
     let result = compile('[foo]')
 
     result({
+      type: 'p',
       props: {
         foo: true
       }

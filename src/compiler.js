@@ -99,7 +99,8 @@ export function create(options = {}) {
 
     if (rule.classNames)
       fns.push(
-        failText(({ props: { className }}) => {
+        failText(({ props }) => {
+          let className = props && props.className
           return rule.classNames.every(clsName =>
             className && className.indexOf(clsName) !== -1)
         })

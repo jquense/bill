@@ -4,7 +4,7 @@ import isPlainObject from 'lodash/lang/isPlainObject';
 import { create as createCompiler, parse } from './compiler';
 import {
     anyParent, directParent
-  , isDomElement, isCompositeElement
+  , isDomElement, isCompositeElement, isTextElement
   , isReactInstance, isDOMComponent, isCompositeComponent } from './utils';
 
 export function eachChild(subject, fn) {
@@ -22,15 +22,18 @@ export function eachChild(subject, fn) {
     publicInst = inst.getPublicInstance()
 
   if (isDOMComponent(publicInst)) {
-    let renderedChildren = inst._renderedChildren || {}
+    let renderedChildren = inst._renderedChildren
       , child = element && element.props.children;
 
-    if (child != null && !isPlainObject(child) && !Array.isArray(child) && !isReactInstance(child))
+    // in cases where there is a single child
+    // renderedChildren will be null if that child is a non-element
+    // renderable thing, like a string or number.
+    if (renderedChildren != null)
+      Object.keys(renderedChildren || {}).forEach(
+        key => fn(renderedChildren[key])
+      );
+    else if (child != null && isTextElement(child))
       fn(child)
-
-    Object.keys(renderedChildren).forEach(
-      key => fn(renderedChildren[key])
-    );
   }
   else if (isCompositeComponent(publicInst) && inst._renderedComponent != null) {
     fn(inst._renderedComponent);
