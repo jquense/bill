@@ -131,7 +131,7 @@ export function create(options = {}) {
     }
 
     return fns.reduce((current, next = ()=> true)=> {
-      return (...args)=> next(...args) && current(...args)
+      return (...args)=> current(...args) && next(...args)
     })
   }
 
