@@ -1,3 +1,11 @@
+v1.5.2 - Sat, 19 Dec 2015 19:44:15 GMT
+--------------------------------------
+
+- [cbad23f](../../commit/cbad23f) [fixed] properly allow iterable children
+- [40a6df8](../../commit/40a6df8) [changed] run local tests before nesting or pseudo selectors
+
+
+
 v1.5.1 - Sat, 19 Dec 2015 04:50:13 GMT
 --------------------------------------
 
