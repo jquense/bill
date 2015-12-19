@@ -32,7 +32,7 @@ export function eachChild(subject, fn) {
       key => fn(renderedChildren[key])
     );
   }
-  else if (isCompositeComponent(publicInst)) {
+  else if (isCompositeComponent(publicInst) && inst._renderedComponent != null) {
     fn(inst._renderedComponent);
   }
 }
@@ -41,11 +41,10 @@ export function eachChild(subject, fn) {
 export function createNode(subject, lastWrapper) {
   let element, inst;
 
-  if (React.isValidElement(subject))
-    element = subject, inst = null;
-
-  else if (isReactInstance(subject))
+  if (isReactInstance(subject))
     element = subject._currentElement, inst = subject;
+  else
+    element = subject, inst = null;
 
   return Object.defineProperties({}, {
     element: { get: () => element, enumerable: true },
