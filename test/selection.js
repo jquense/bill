@@ -23,6 +23,8 @@ describe('Selecting', ()=> {
   each(types, (details, key) => {
     let { match, selector: s } = details;
 
+    let isInstanceTest = key === 'instance';
+
     describe(key, ()=> {
 
       details.beforeEach &&
@@ -84,6 +86,37 @@ describe('Selecting', ()=> {
             <a /><p/>
           </div>
         ).length.should.equal(2)
+      })
+
+      it(':text', ()=> {
+        let Composite = ()=> <span />
+        match(':text',
+          <div>
+            { 9000 }
+            <Composite><p /></Composite>
+            <section >some text</section>
+          </div>
+        ).length.should.equal(2)
+      })
+
+      it(':dom', ()=> {
+        let Composite = ()=> <span />
+        match(':dom',
+          <div>
+            <Composite><p /></Composite>
+            <section >some text</section>
+          </div>
+        ).length.should.equal(3)
+      })
+
+      it(':composite', ()=> {
+        let Composite = ()=> <span />
+        match(':composite',
+          <div>
+            <Composite><p /></Composite>
+            <section >some text</section>
+          </div>
+        ).length.should.equal(1)
       })
 
       it('should match nested attributes', ()=>{
