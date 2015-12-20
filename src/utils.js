@@ -41,3 +41,13 @@ export function legacySelector(...args){
 
   return [strings, values]
 }
+
+export function getAllPropertyNames(obj) {
+  let proto = Object.getPrototypeOf(obj)
+    , names = Object.getOwnPropertyNames(obj)
+
+  if (proto)
+    names.concat(getAllPropertyNames(proto))
+
+  return names
+}

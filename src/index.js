@@ -1,15 +1,25 @@
 import { isValidElement } from 'react';
-import * as elements from './element-selector';
-import * as instance from './instance-selector';
+import { NODE_TYPE } from './node';
+import { findAll, createNode } from './node';
+import { create as createCompiler, parse } from './compiler';
+import selectors from './selectors';
 
-function match(selector, element){
-  if (isValidElement(element))
-    return elements.match(selector, element)
+let compiler = createCompiler()
 
-  return instance.match(selector, element)
+selectors(compiler);
+
+function match(selector, tree, includeSelf = true) {
+  return createNode(tree).findAll(compiler.compile(selector), includeSelf)
+}
+
+function matchKind(selector, element, includeSelf) {
+  return match(selector, element, includeSelf)
+    .map(node => node.instance || node.element)
 }
 
 module.exports = {
   match,
-  selector: elements.compiler.selector 
+  matchKind,
+  findAll,
+  isNode: el => el && el.$$typeof === NODE_TYPE,
 }

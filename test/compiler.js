@@ -41,7 +41,7 @@ describe('create compiler', ()=> {
   })
 
   it('should handle non element values', ()=> {
-    registerPseudo('text', ()=> element => isTextElement(element))
+    registerPseudo('text', ()=> node => isTextElement(node.element))
     let result = compile(':text')
 
     result({}).should.equal(true)
@@ -55,7 +55,14 @@ describe('create compiler', ()=> {
     result(null).should.equal(false)
   })
 
-  it('should match props', ()=>{
+  it('universal selector * should include text nodes', ()=> {
+    let result = compile('*')
+
+    result('hello').should.equal(true)
+    result(500).should.equal(true)
+  })
+
+  it('should match props', ()=> {
     let result = compile('[foo="5"]')
 
     result({

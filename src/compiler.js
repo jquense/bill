@@ -2,12 +2,15 @@ import React from 'react';
 import transform from 'lodash/object/transform';
 import has from 'lodash/object/has';
 import uid from 'lodash/utility/uniqueId';
+import { createNode, NODE_TYPES } from './node';
 import { isTextElement, legacySelector } from './utils';
 import { CssSelectorParser } from 'css-selector-parser';
 import fnName from 'fn-name';
 
 let parser = new CssSelectorParser();
-let name = type => type.displayName || fnName(type) || ''
+
+let name = type => typeof type === 'string'
+  ? type : type.displayName || fnName(type) || ''
 
 let prim = value => {
   let typ = typeof value;
@@ -15,7 +18,7 @@ let prim = value => {
 }
 
 function failText(fn){
-  return (...args) => isTextElement(args[0]) ? false : fn(...args)
+  return (...args) => args[0].nodeType === NODE_TYPES.TEXT ? false : fn(...args)
 }
 
 export function parse(selector){
@@ -88,9 +91,7 @@ export function create(options = {}) {
     let rule = rules.shift();
 
     if (rule.tagName)
-      fns.push(
-        failText(getTagComparer(rule, values))
-      )
+      fns.push(getTagComparer(rule, values))
 
     if (rule.attrs)
       fns.push(
@@ -99,7 +100,7 @@ export function create(options = {}) {
 
     if (rule.classNames)
       fns.push(
-        failText(({ props }) => {
+        failText(({ element: { props } }) => {
           let className = props && props.className
           return rule.classNames.every(clsName =>
             className && className.indexOf(clsName) !== -1)
@@ -131,9 +132,11 @@ export function create(options = {}) {
       fns.push(NESTING[operator](nestedCompiled))
     }
 
-    return fns.reduce((current, next = ()=> true)=> {
+    let compiledRule = fns.reduce((current, next = ()=> true)=> {
       return (...args)=> current(...args) && next(...args)
     })
+
+    return (element, ...args)=> compiledRule(createNode(element), ...args)
   }
 
   function selector(strings, ...values){
@@ -161,24 +164,27 @@ export function create(options = {}) {
 }
 
 function getTagComparer(rule, values) {
-  let isStr = t => typeof t === 'string'
-  let tagName = values[rule.tagName] || rule.tagName;
+  let tagName = values[rule.tagName] || rule.tagName
+    , test;
 
   if (rule.tagName === '*')
-    return ()=> true
+    test = ()=> true
 
-  if (isStr(tagName)){
-    tagName = tagName.toUpperCase();
-    return root => isStr(root.type)
-      ? root.type.toUpperCase() === tagName
-      : name(root.type).toUpperCase() === tagName;
+  else {
+    if (typeof tagName !== 'string')
+      test = root => root.element.type === tagName
+    else {
+      test = root => name(root.element.type).toUpperCase() === tagName.toUpperCase();
+    }
+
+    test = failText(test)
   }
 
-  return root => root.type === tagName
+  return test
 }
 
 function getPropComparer(rule, values) {
-  return ({ props }) => rule.attrs.every(attr => {
+  return ({ element: { props } }) => rule.attrs.every(attr => {
     if (!has(attr, 'value'))
       return !!props[attr.name]
 
