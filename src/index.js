@@ -22,4 +22,5 @@ module.exports = {
   matchKind,
   findAll,
   isNode: el => el && el.$$typeof === NODE_TYPE,
+  ...compiler
 }
