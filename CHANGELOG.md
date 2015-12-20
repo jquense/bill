@@ -1,3 +1,11 @@
+v2.0.0 - Sun, 20 Dec 2015 21:47:06 GMT
+--------------------------------------
+
+- [960138f](../../commit/960138f) [added] findAll and compiler methods to main export
+- [f353cde](../../commit/f353cde) [added] Node object abstraction used by the compiler
+
+
+
 v1.5.2 - Sat, 19 Dec 2015 19:44:15 GMT
 --------------------------------------
 
