@@ -1,6 +1,6 @@
 {
   "name": "bill",
-  "version": "1.5.2",
+  "version": "2.0.0",
   "description": "css selectors for React Elements",
   "main": "index.js",
   "repository": {
@@ -10,7 +10,14 @@
   "keywords": [
     "react",
     "test",
-    "query"
+    "query",
+    "css",
+    "selector",
+    "react-component",
+    "tree",
+    "traversal",
+    "react element",
+    "node"
   ],
   "author": "jquense",
   "license": "MIT",
@@ -19,7 +26,8 @@
   },
   "homepage": "https://github.com/jquense/bill",
   "peerDependencies": {
-    "react": ">=0.13.0 || ^0.14.0-alpha1"
+    "react": "^0.14.0",
+    "react-dom": "^0.14.0"
   },
   "dependencies": {
     "css-selector-parser": "^1.1.0",
