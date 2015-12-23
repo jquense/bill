@@ -124,7 +124,15 @@ export function createNode(subject, lastWrapper) {
   node = Object.defineProperties({}, {
     $$typeof: { value: NODE_TYPE },
     nodeType: { value: type },
-    element: { value: element, enumerable: true },
+    element: {
+      enumerable: true,
+      get() {
+        if (node.privateInstance)
+          return node.privateInstance._currentElement
+
+        return element
+      }
+    },
     privateInstance: { value: inst, enumerable: true },
     instance: {
       enumerable: true,
