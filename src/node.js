@@ -112,7 +112,7 @@ export function createNode(subject, lastWrapper) {
 
   let children, type;
 
-  if (element) {
+  if (element != null && element !== false) {
     if (isCompositeElement(element))
       type = NODE_TYPES.COMPOSITE;
     else if (isDomElement(element))
