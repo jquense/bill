@@ -1,3 +1,10 @@
+v2.0.2 - Thu, 24 Dec 2015 02:42:09 GMT
+--------------------------------------
+
+- [d820035](../../commit/d820035) [fixed] node properties not using the correct element
+
+
+
 v2.0.1 - Wed, 23 Dec 2015 23:07:36 GMT
 --------------------------------------
 
