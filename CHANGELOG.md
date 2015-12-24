@@ -1,3 +1,10 @@
+v2.0.3 - Thu, 24 Dec 2015 15:27:22 GMT
+--------------------------------------
+
+- [ca1c9e0](../../commit/ca1c9e0) [fixed] better nodeType element check includes falsy renderable elements
+
+
+
 v2.0.2 - Thu, 24 Dec 2015 02:42:09 GMT
 --------------------------------------
 
