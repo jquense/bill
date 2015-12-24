@@ -123,7 +123,8 @@ export function createNode(subject, lastWrapper) {
 
   node = Object.defineProperties({}, {
     $$typeof: { value: NODE_TYPE },
-    nodeType: { value: type },
+    nodeType: { value: type, enumerable: true },
+    privateInstance: { value: inst, enumerable: true },
     element: {
       enumerable: true,
       get() {
@@ -133,7 +134,6 @@ export function createNode(subject, lastWrapper) {
         return element
       }
     },
-    privateInstance: { value: inst, enumerable: true },
     instance: {
       enumerable: true,
       get() {
@@ -144,8 +144,8 @@ export function createNode(subject, lastWrapper) {
           if (publicInst === null)
             publicInst = inst._instance
         }
-        else if (isTextElement(element))
-          publicInst = element
+        else if (isTextElement(node.element))
+          publicInst = node.element
 
         return publicInst
       }
@@ -159,7 +159,7 @@ export function createNode(subject, lastWrapper) {
       enumerable: true,
       get(){
         let children = lastWrapper ? lastWrapper.children : []
-          , idx = indexOfNode(children, inst || element) - 1
+          , idx = indexOfNode(children, inst || node.element) - 1
 
         return idx < 0 ? null : children[idx]
       }
@@ -168,7 +168,7 @@ export function createNode(subject, lastWrapper) {
       enumerable: true,
       get(){
         let children = lastWrapper ? lastWrapper.children : []
-          , idx = indexOfNode(children, inst || element) + 1
+          , idx = indexOfNode(children, inst || node.element) + 1
 
         return idx >= children.length ? null : children[idx]
       }
@@ -178,7 +178,7 @@ export function createNode(subject, lastWrapper) {
       get(){
         if (!children) {
           children = []
-          eachChild(inst || element,
+          eachChild(inst || node.element,
             child => children.push(createNode(child, node)))
         }
 
