@@ -1,3 +1,11 @@
+v2.1.0 - Sat, 26 Dec 2015 20:40:21 GMT
+--------------------------------------
+
+- [44b8c8b](../../commit/44b8c8b) [fixed] correctly export NODE_TYPES
+- [a03390d](../../commit/a03390d) [changed] added `isSelector` option to registerPseduo to allow non selctor pseudo calls
+
+
+
 v2.0.3 - Thu, 24 Dec 2015 15:27:22 GMT
 --------------------------------------
 
