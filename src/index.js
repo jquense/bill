@@ -1,6 +1,5 @@
 import { isValidElement } from 'react';
-import { NODE_TYPE } from './node';
-import { findAll, createNode } from './node';
+import { findAll, createNode, NODE_TYPE, NODE_TYPES } from './node';
 import { create as createCompiler, parse } from './compiler';
 import selectors from './selectors';
 
@@ -22,5 +21,6 @@ module.exports = {
   matchKind,
   findAll,
   isNode: el => el && el.$$typeof === NODE_TYPE,
+  NODE_TYPES,
   ...compiler
 }
