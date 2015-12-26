@@ -170,25 +170,26 @@ let found = findAll(elements, function (node) {
 })
 ```
 
-### registerPseudo(pseudoSelector, testFunction)
+### registerPseudo(pseudoSelector, isSelector=true, testFunction)
 
 Registers a new pseudo selector with the compiler. The second parameter is a function that will be called
 with the compiled inner selector of the pseudo selector (if it exists) and should return a __new__ function that
-tests an element or node.
+tests an element or node. The second `isSelector` argument indicates that the inner text of the pseudoSelector
+(as in `'foo'` in `:has(.foo)`) is itself a selector that needs to be compiled into a function.
 
 ```js
 // A simple `:disabled` pseudo selector
-bill.registerPseudo('disabled', function() {
+bill.registerPseudo('disabled', false, function() {
   return (node) => node.nodeType !== NODE_TYPES.TEXT
     && node.element.props.disabled === true
 })
 
 // We want to test if an element has a sibling that matches
-// a selector e.g. :nextSibling('.foo')
-bill.registerPseudo('nextSibling', function (test) {
+// a selector e.g. :nextSibling(.foo)
+bill.registerPseudo('nextSibling', function (compiledInnerSelector) {
   return function (node) {
     node = node.nextSibling
-    return !!node && test(node)
+    return !!node && compiledInnerSelector(node)
   }
 })
 

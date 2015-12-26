@@ -62,8 +62,13 @@ export function create(options = {}) {
       NESTING[name] = fn
     },
 
-    registerPseudo(name, fn){
-      parser.registerSelectorPseudos(name)
+    registerPseudo(name, containsSelector, fn) {
+      if (typeof containsSelector === 'function')
+        fn = containsSelector, containsSelector = true;
+
+      if (containsSelector)
+        parser.registerSelectorPseudos(name)
+
       PSEUDOS[name] = fn
     }
   }
@@ -115,7 +120,7 @@ export function create(options = {}) {
 
           let pseudoCompiled = pseudo.valueType === 'selector'
             ? compile(pseudo.value, values)
-            : pseudo
+            : pseudo.value
 
           return PSEUDOS[pseudo.name](pseudoCompiled, values, options)
         })

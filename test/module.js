@@ -44,7 +44,7 @@ describe('Main exports', () => {
     ])
   })
 
-  it('should registerPseudo', ()=> {
+  it('should registerPseudo selector', ()=> {
     bill.registerPseudo('nextSibling', test => (node) => {
       node = node.nextSibling
       return !!node && test(node)
@@ -59,6 +59,16 @@ describe('Main exports', () => {
     )
 
     matches[0].element.props.children.should.equal('2')
+  })
+
+  it('should registerPseudo', ()=> {
+    bill.registerPseudo('test', false, text => (node) => {
+      expect(text).to.equal('foo')
+    })
+
+    let matches = bill.match('li:test(foo)',
+      <li className='foo'>foo</li>
+    )
   })
 
   it('should registerNesting', ()=> {
