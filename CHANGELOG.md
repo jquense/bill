@@ -1,3 +1,10 @@
+v2.1.1 - Wed, 30 Dec 2015 03:54:35 GMT
+--------------------------------------
+
+- [b9e0db0](../../commit/b9e0db0) [fixed] tag name comparisons should be case sensative
+
+
+
 v2.1.0 - Sat, 26 Dec 2015 20:40:21 GMT
 --------------------------------------
 
