@@ -188,4 +188,20 @@ describe('create compiler', ()=> {
       props: { className: 'foo' }
     }).should.equal(true)
   })
+
+  // https://github.com/jquense/teaspoon/issues/14
+  it('should make a case sensitive tagName comparison', ()=>{
+    let result = compile('button.foo')
+    let Button = ()=>{}
+
+    result({
+      type: Button,
+      props: { className: 'foo' }
+    }).should.equal(false)
+
+    result({
+      type: 'button',
+      props: { className: 'foo' }
+    }).should.equal(true)
+  })
 })

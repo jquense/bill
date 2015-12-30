@@ -179,7 +179,7 @@ function getTagComparer(rule, values) {
     if (typeof tagName !== 'string')
       test = root => root.element.type === tagName
     else {
-      test = root => name(root.element.type).toUpperCase() === tagName.toUpperCase();
+      test = root => name(root.element.type) === tagName;
     }
 
     test = failText(test)
