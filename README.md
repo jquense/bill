@@ -1,6 +1,7 @@
 bill
 =======
 
+Sort of like [Sizzle](https://github.com/jquery/sizzle/tree/master#sizzle) for React, `bill` is
 A set of tools for matching React Element and Component trees against CSS selectors. `bill` is meant to be a
 substrate library for building more interesting and user friendly testing utilities. It probably shouldn't
 be used as a standalone tool.
