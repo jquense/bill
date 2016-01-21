@@ -1,3 +1,11 @@
+v2.1.2 - Thu, 21 Jan 2016 15:56:24 GMT
+--------------------------------------
+
+- [392fcc1](../../commit/392fcc1) [fixed] don't conflict with React element typeof
+- [151c851](../../commit/151c851) [fixed] don't conflict with React element typeof
+
+
+
 v2.1.1 - Wed, 30 Dec 2015 03:54:35 GMT
 --------------------------------------
 
