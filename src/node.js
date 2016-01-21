@@ -9,7 +9,7 @@ import {
   , isTextElement, isReactInstance
   , isDOMComponent, isCompositeComponent, getAllPropertyNames} from './utils';
 
-export const NODE_TYPE = (typeof Symbol === 'function' && Symbol.for && Symbol.for('bill.node')) || 0xeac7;
+export const NODE_TYPE = (typeof Symbol === 'function' && Symbol.for && Symbol.for('bill.node')) || 0xadc3;
 
 export const NODE_TYPES = {
   COMPOSITE: 1,
