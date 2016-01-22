@@ -29,6 +29,19 @@ describe('create compiler', ()=> {
     }).should.equal(true)
   })
 
+  it('should coerce className helpers to string', ()=> {
+    let result = compile('a.foo')
+    let bemHelper = () => {}
+    bemHelper.toString = () => 'foo'
+
+    result({
+      type: 'a',
+      props: {
+        className: bemHelper
+      }
+    }).should.equal(true)
+  })
+
   it('should fail when not a match', ()=>{
     let result = compile('a.foo')
 

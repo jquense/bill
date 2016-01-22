@@ -106,7 +106,7 @@ export function create(options = {}) {
     if (rule.classNames)
       fns.push(
         failText(({ element: { props } }) => {
-          let className = props && props.className
+          let className = props && '' + props.className
           return rule.classNames.every(clsName =>
             className && className.indexOf(clsName) !== -1)
         })
