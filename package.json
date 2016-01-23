@@ -6,8 +6,8 @@
   "scripts": {
     "test": "karma start --single-run",
     "tdd": "karma start",
-    "build": "babel src --out-dir lib && cpy ./README.md ./lib",
-    "release": "release"
+    "build": "babel src --out-dir lib && cpy ./README.md ./lib & trim-pkg ./lib -m index.js",
+    "prepublish": "npm run test && npm run build"
   },
   "repository": {
     "type": "git",
@@ -55,18 +55,14 @@
     "react": "^0.14.0",
     "react-addons-create-fragment": "^0.14.3",
     "react-dom": "^0.14.0",
-    "release-script": "^0.5.3",
     "sinon": "^1.17.1",
     "sinon-chai": "^2.8.0",
+    "trim-package-json": "^1.0.0",
     "webpack": "^1.12.2"
   },
   "dependencies": {
     "css-selector-parser": "^1.1.0",
     "fn-name": "^2.0.1",
     "lodash": "^3.10.1"
-  },
-  "release-script": {
-    "defaultDryRun": "false",
-    "altPkgRootFolder": "lib"
   }
 }
