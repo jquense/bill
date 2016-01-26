@@ -29,6 +29,42 @@ describe('create compiler', ()=> {
     }).should.equal(true)
   })
 
+  it('should not fail is missing props', ()=> {
+    let result = compile('a.foo')
+
+    expect(() => result({
+      type: 'a',
+      props: null
+    })).to.not.throw()
+  })
+
+  it('should not fail is missing className', ()=> {
+    let result = compile('a.foo')
+
+    expect(() => result({
+      type: 'a',
+      props: {}
+    })).to.not.throw()
+  })
+
+  it('should not match className subsets', ()=> {
+    let result = compile('a.foo-bar')
+
+    result({
+      type: 'a',
+      props: {
+        className: 'foo bar foo-bar-'
+      }
+    }).should.equal(false)
+
+    result({
+      type: 'a',
+      props: {
+        className: 'foo-bar' 
+      }
+    }).should.equal(true)
+  })
+
   it('should coerce className helpers to string', ()=> {
     let result = compile('a.foo')
     let bemHelper = () => {}

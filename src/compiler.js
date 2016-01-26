@@ -106,9 +106,13 @@ export function create(options = {}) {
     if (rule.classNames)
       fns.push(
         failText(({ element: { props } }) => {
-          let className = props && '' + props.className
-          return rule.classNames.every(clsName =>
-            className && className.indexOf(clsName) !== -1)
+          if (!props || !has(props, 'className'))
+            return false
+
+          let className = (' ' + props.className + ' ').replace(/[\t\r\n\f]/g, ' ')
+
+          return rule.classNames
+            .every(cls => className.indexOf(' ' + cls + ' ') >= 0)
         })
       )
 

@@ -26,7 +26,7 @@ module.exports = function (config) {
     },
 
     webpack: {
-      entry: 'test/index.js',
+      entry: './test/index.js',
       module: {
         loaders: [{ test: /\.js$/, loader: 'babel', exclude: /node_modules/ }]
       }
