@@ -44,6 +44,7 @@ matches[0].element // { type: List, props }
 
 ### Supported
 
+- id: `#foo`
 - classes: `.foo`
 - attributes: `div[propName="hi"]` or `div[boolProp]`
 - `>`: direct descendent `div > .foo`

@@ -103,6 +103,16 @@ export function create(options = {}) {
         failText(getPropComparer(rule, values))
       )
 
+    if (rule.id)
+      fns.push(
+        failText(({ element: { props } }) => {
+          if (!props || !has(props, 'id'))
+            return false
+
+          return rule.id === ('' + props.id)
+        })
+      )
+
     if (rule.classNames)
       fns.push(
         failText(({ element: { props } }) => {

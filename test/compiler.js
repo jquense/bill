@@ -29,8 +29,18 @@ describe('create compiler', ()=> {
     }).should.equal(true)
   })
 
-  it('should not fail is missing props', ()=> {
-    let result = compile('a.foo')
+
+  it('should not fail is missing id', ()=> {
+    let result = compile('#foo')
+
+    expect(() => result({
+      type: 'a',
+      props: {}
+    })).to.not.throw()
+  })
+
+  it('should not fail id with missing props', ()=> {
+    let result = compile('#foo')
 
     expect(() => result({
       type: 'a',
@@ -38,12 +48,23 @@ describe('create compiler', ()=> {
     })).to.not.throw()
   })
 
-  it('should not fail is missing className', ()=> {
+  it('should match id', ()=> {
+    let result = compile('#foo')
+
+    result({
+      type: 'a',
+      props: {
+        id: 'foo'
+      }
+    }).should.equal(true)
+  })
+
+  it('should not fail className with missing props', ()=> {
     let result = compile('a.foo')
 
     expect(() => result({
       type: 'a',
-      props: {}
+      props: null
     })).to.not.throw()
   })
 
@@ -60,7 +81,7 @@ describe('create compiler', ()=> {
     result({
       type: 'a',
       props: {
-        className: 'foo-bar' 
+        className: 'foo-bar'
       }
     }).should.equal(true)
   })
