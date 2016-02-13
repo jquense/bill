@@ -40,6 +40,57 @@ describe('Node Objects', ()=> {
     empty.instance.should.exist
     empty.instance.props.name.should.equal('foo')
   })
+
+  describe('dynamic changes in the tree', () => {
+    class Dynamic extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = { show: false };
+        this.show = () => this.setState({ show: true })
+        this.hide = () => this.setState({ show: false })
+      }
+      render() {
+        return (
+          <div>
+            <div>foo</div>
+            {this.state.show && <p>hi</p>}
+          </div>
+        );
+      }
+    }
+
+    it('should update children when component changes', () => {
+      let instance = render(<Dynamic />, document.createElement('div'))
+      let node = createNode(instance)
+        , div = node.children[0]
+
+      let firstChildren = div.children;
+
+      firstChildren.should.have.lengthOf(1)
+      firstChildren.should.equal(div.children)
+
+      instance.show()
+
+      div = node.children[0]
+
+      firstChildren.should.equal(div.children)
+      div.children.should.have.lengthOf(2)
+    })
+
+    it('should null stale nodes', () => {
+      let instance = render(<Dynamic />, document.createElement('div'))
+
+      instance.show()
+
+      let node = createNode(instance)
+        , children = node.children[0].children
+
+      instance.hide()
+
+      expect(children[1].instance).to.not.exist
+      expect(children[1].privateInstance).to.not.exist
+    })
+  })
 })
 
 describe('child traversal', ()=> {

@@ -22,6 +22,15 @@ function indexOfNode(arr, instOrElement) {
     return node.privateInstance === instOrElement || node.element === instOrElement
   })
 }
+function isStale(privateInstance) {
+  return privateInstance && privateInstance._rootNodeID === null
+}
+
+function trimStale(nodes) {
+  for (var i = nodes.length - 1; i--;)
+  	if (isStale(array[i].privateInstance))
+      nodes.splice(i, 1);
+}
 
 function instanceFromNativeNode(subject) {
   if (subject._reactInternalComponent)
@@ -110,7 +119,8 @@ export function createNode(subject, lastWrapper) {
   else
     element = subject, inst = null;
 
-  let children, type;
+  let children = []
+    , lastElement, type;
 
   if (element != null && element !== false) {
     if (isCompositeElement(element))
@@ -124,7 +134,14 @@ export function createNode(subject, lastWrapper) {
   node = Object.defineProperties({}, {
     $$typeof: { value: NODE_TYPE },
     nodeType: { value: type, enumerable: true },
-    privateInstance: { value: inst, enumerable: true },
+    parentNode: { value: lastWrapper, enumerable: true },
+    privateInstance: {
+      enumerable: true,
+      get(){
+        if (inst && isStale(inst)) inst = null
+        return inst
+      }
+    },
     element: {
       enumerable: true,
       get() {
@@ -138,11 +155,14 @@ export function createNode(subject, lastWrapper) {
       enumerable: true,
       get() {
         let publicInst;
-        if (!inst) return
-        if (inst.getPublicInstance) {
-          publicInst = inst.getPublicInstance()
+        let privInst = node.privateInstance;
+
+        if (!privInst) return
+
+        if (privInst.getPublicInstance) {
+          publicInst = privInst.getPublicInstance()
           if (publicInst === null)
-            publicInst = inst._instance
+            publicInst = privInst._instance
         }
         else if (isTextElement(node.element))
           publicInst = node.element
@@ -150,7 +170,7 @@ export function createNode(subject, lastWrapper) {
         return publicInst
       }
     },
-    parentNode: { value: lastWrapper, enumerable: true },
+
     findAll: {
       enumerable: true,
       value: (test, includeSelf) => findAll(node, test, includeSelf)
@@ -175,13 +195,22 @@ export function createNode(subject, lastWrapper) {
     },
     children: {
       enumerable: true,
-      get(){
-        if (!children) {
-          children = []
-          eachChild(inst || node.element,
-            child => children.push(createNode(child, node)))
-        }
+      get() {
+        let elem = node.element;
+        if (!lastElement || elem !== lastElement) {
+          if (children.length)
+            children.length = 0
 
+          lastElement = elem
+
+          eachChild(node.privateInstance || elem, child => {
+            child = createNode(child, node);
+
+            if (!isStale(child.privateInstance))
+              children.push(child)
+          })
+        }
+        
         return children
       }
     }
