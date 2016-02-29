@@ -11,13 +11,11 @@ function querySelectorAll(selector, tree, includeSelf = true) {
   return createNode(tree).findAll(compiler.compile(selector), includeSelf)
 }
 
-function matchKind(selector, element, includeSelf) {
-  return match(selector, element, includeSelf)
-    .map(node => node.instance || node.element)
 }
 
 module.exports = {
   matchKind,
+  matches,
   querySelectorAll,
   findAll,
   isNode: el => el && el.$$typeof === NODE_TYPE,
