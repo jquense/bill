@@ -4,13 +4,20 @@
   "description": "css selectors for React Elements",
   "main": "lib/index.js",
   "scripts": {
-    "test": "karma start --single-run",
     "tdd": "karma start",
+    "test": "karma start --single-run",
+    "test-all": "npm run react:13 && npm test && npm run react:14 && npm test",
+
     "lint": "eslint src",
+
+    "react:clean": "rimraf node_modules/react node_modules/react-dom",
+    "react:13": "npm run react:clean && npm i react@0.13",
+    "react:14": "npm run react:clean && npm i react@0.14",
+
     "build": "babel src --out-dir lib && cpy ./README.md ./lib & trim-pkg ./lib -m index.js",
-    "patch": "npm run test && npm version patch && npm run build && cd ./lib && npm publish",
-    "minor": "npm run test && npm version minor && npm run build && cd ./lib && npm publish",
-    "major": "npm run test && npm version major && npm run build && cd ./lib && npm publish"
+    "patch": "npm run test-all && npm version patch && npm run build && cd ./lib && npm publish",
+    "minor": "npm run test-all && npm version minor && npm run build && cd ./lib && npm publish",
+    "major": "npm run test-all && npm version major && npm run build && cd ./lib && npm publish"
   },
   "repository": {
     "type": "git",
@@ -35,8 +42,7 @@
   },
   "homepage": "https://github.com/jquense/bill",
   "peerDependencies": {
-    "react": "^0.14.0",
-    "react-dom": "^0.14.0"
+    "react": "^0.13.0 || ^0.14.0"
   },
   "devDependencies": {
     "babel": "^5.8.35",
@@ -58,9 +64,7 @@
     "karma-webpack": "^1.7.0",
     "mocha": "^2.3.3",
     "mt-changelog": "^0.6.2",
-    "react": "^0.14.0",
-    "react-addons-create-fragment": "^0.14.3",
-    "react-dom": "^0.14.0",
+    "react": "^0.13.0 || ^0.14.0",
     "sinon": "^1.17.1",
     "sinon-chai": "^2.8.0",
     "trim-package-json": "^1.0.0",

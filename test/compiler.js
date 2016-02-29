@@ -1,7 +1,5 @@
-import React from 'react';
 import { create } from '../src/compiler';
 import { isTextElement } from '../src/utils';
-
 
 chai.use(require('sinon-chai'))
 
@@ -193,7 +191,7 @@ describe('create compiler', ()=> {
 
   it('should create valid selector with substitutions', ()=>{
     let List = ()=>{};
-    let { selector, valueMap } = s`${List}.foo`;
+    let { selector } = s`${List}.foo`
 
     ;(() => compile(selector)).should.not.throw()
 
@@ -202,7 +200,7 @@ describe('create compiler', ()=> {
 
   it('should create valid selector as a normal function call', ()=>{
     let List = ()=>{};
-    let { selector, valueMap } = s(List, '.foo');
+    let { selector } = s(List, '.foo')
 
     ;(() => compile(selector)).should.not.throw()
 

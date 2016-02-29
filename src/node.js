@@ -1,13 +1,10 @@
 import React from 'react';
-import { findDOMNode } from 'react-dom';
 import ReactInstanceMap from 'react/lib/ReactInstanceMap';
-import isPlainObject from 'lodash/lang/isPlainObject';
 import findIndex from 'lodash/array/findIndex';
-import { create as createCompiler, parse } from './compiler';
 import {
     isDomElement, isCompositeElement
   , isTextElement, isReactInstance
-  , isDOMComponent, isCompositeComponent, getAllPropertyNames} from './utils';
+  , isDOMComponent, getRenderedChildren } from './utils';
 
 export const NODE_TYPE = (typeof Symbol === 'function' && Symbol.for && Symbol.for('bill.node')) || 0xadc3;
 
@@ -18,7 +15,7 @@ export const NODE_TYPES = {
 }
 
 function indexOfNode(arr, instOrElement) {
-  return findIndex(arr, (node, i) => {
+  return findIndex(arr, node => {
     return node.privateInstance === instOrElement || node.element === instOrElement
   })
 }
@@ -26,11 +23,11 @@ function isStale(privateInstance) {
   return privateInstance && privateInstance._rootNodeID === null
 }
 
-function trimStale(nodes) {
-  for (var i = nodes.length - 1; i--;)
-  	if (isStale(array[i].privateInstance))
-      nodes.splice(i, 1);
-}
+// function trimStale(nodes) {
+//   for (var i = nodes.length - 1; i--;)
+//     if (isStale(nodes[i].privateInstance))
+//       nodes.splice(i, 1);
+// }
 
 function instanceFromNativeNode(subject) {
   if (subject._reactInternalComponent)
@@ -82,9 +79,10 @@ export function eachChild(subject, fn) {
   if (inst.getPublicInstance)
     publicInst = inst.getPublicInstance()
 
+  let renderedChildren = getRenderedChildren(inst, publicInst);
+
   if (isDOMComponent(publicInst)) {
-    let renderedChildren = inst._renderedChildren
-      , child = element && element.props.children;
+    let child = element && element.props.children;
 
     // in cases where there is a single child
     // renderedChildren will be null if that child is a non-element
@@ -99,9 +97,9 @@ export function eachChild(subject, fn) {
   else if (
     React.isValidElement(element) &&
     typeof element.type === 'function' &&
-    inst._renderedComponent != null
+    renderedChildren != null
   ) {
-    fn(inst._renderedComponent);
+    fn(renderedChildren);
   }
 }
 
@@ -210,7 +208,7 @@ export function createNode(subject, lastWrapper) {
               children.push(child)
           })
         }
-        
+
         return children
       }
     }

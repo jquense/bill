@@ -1,6 +1,5 @@
-import { isValidElement } from 'react';
 import { findAll, createNode, NODE_TYPE, NODE_TYPES } from './node';
-import { create as createCompiler, parse } from './compiler';
+import { create as createCompiler } from './compiler';
 import selectors from './selectors';
 
 let compiler = createCompiler()

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, unmountComponentAtNode } from 'react-dom'
+import { render, component as c } from './helpers'
 import bill from '../src/index';
 import each from 'lodash/collection/each';
 
@@ -22,8 +22,6 @@ describe('Selecting', ()=> {
 
   each(types, (details, key) => {
     let { querySelectorAll: match, selector: s } = details;
-
-    let isInstanceTest = key === 'instance';
 
     describe(key, ()=> {
 
@@ -89,7 +87,7 @@ describe('Selecting', ()=> {
       })
 
       it(':text', ()=> {
-        let Composite = ()=> <span />
+        let Composite = c(()=> <span />)
         match(':text',
           <div>
             { 9000 }
@@ -100,7 +98,7 @@ describe('Selecting', ()=> {
       })
 
       it(':dom', ()=> {
-        let Composite = ()=> <span />
+        let Composite = c(()=> <span />)
         match(':dom',
           <div>
             <Composite><p /></Composite>
@@ -110,7 +108,7 @@ describe('Selecting', ()=> {
       })
 
       it(':composite', ()=> {
-        let Composite = ()=> <span />
+        let Composite =  c(()=> <span />)
         match(':composite',
           <div>
             <Composite><p /></Composite>
@@ -179,7 +177,7 @@ describe('Selecting', ()=> {
       })
 
       it('should match with tag substitions', ()=>{
-        let List = ()=> <div/>;
+        let List = c(()=> <div/>);
 
         match(s`div ${List}.foo`,
           <div>
@@ -192,7 +190,7 @@ describe('Selecting', ()=> {
       })
 
       it('should match with nested tag substitutions', ()=>{
-        let List = ({ children })=> children;
+        let List = c(({ children })=> children)
         let Empty = React.createClass({ render(){ return null } })
 
         match(s`${List}.foo > span`,

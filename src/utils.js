@@ -1,5 +1,5 @@
 import has from 'lodash/object/has';
-import React from 'react';
+import { IS_REACT_14 } from './compat';
 
 let isPrimitive = value => {
   let typ = typeof value;
@@ -19,7 +19,9 @@ export let isCompositeElement =
   element => !isTextElement(element) && typeof element.type === 'function'
 
 
-export let isDOMComponent = inst => !!(inst && inst.nodeType === 1 && inst.tagName);
+export let isDOMComponent = IS_REACT_14
+  ? inst => !!(inst && inst.nodeType === 1 && inst.tagName)
+  : inst => !!(inst && inst.tagName && inst.getDOMNode );
 
 export let isCompositeComponent = inst => !isDOMComponent(inst) || inst === null
     || typeof inst.render === 'function' && typeof inst.setState === 'function';
@@ -28,6 +30,15 @@ export let isReactInstance = obj =>
   obj != null &&
   has(obj, '_currentElement') &&
   has(obj, '_rootNodeID');
+
+export let getRenderedChildren = IS_REACT_14
+  ? (inst => inst._renderedChildren || inst._renderedComponent)
+  : (inst, pInst) => {
+    let child = inst._renderedComponent;
+    return isDOMComponent(pInst)
+      ? child._renderedChildren
+      : child;
+  }
 
 
 export function createSelector(prefix) {

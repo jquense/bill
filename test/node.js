@@ -1,6 +1,6 @@
 import React from 'react';
-import createFragment from 'react-addons-create-fragment';
-import { render, unmountComponentAtNode } from 'react-dom'
+import { IS_REACT_14 } from '../src/compat';
+import { render, createFragment, component as c } from './helpers'
 import { findAll, eachChild, createNode } from '../src/node';
 import { List, Map as IMap } from 'immutable';
 
@@ -12,12 +12,12 @@ let renderIntoDocument = (elements, unwrap) => {
 
 let renderAndReturnTree = element => findAll(renderIntoDocument(element), () => true, true);
 
-let c = fn => React.createClass({ render(){ return fn(this.props, this.context) } })
+let stateful = fn => React.createClass({ render(){ return fn(this.props, this.context) } })
 
 describe('Node Objects', ()=> {
 
   it('should return the public instance of a Composite component', () => {
-    let Example = c(() => <span />)
+    let Example = stateful(() => <span />)
     let [root] = renderAndReturnTree(<Example name='foo' />)
 
     root.instance.should.exist
@@ -25,21 +25,22 @@ describe('Node Objects', ()=> {
   })
 
   it('should return the public instance of a DOM Component', () => {
-    let Example = c(() => <span />)
+    let Example = stateful(() => <span /> )
     let [_, span] = renderAndReturnTree(<Example name='foo' />)
 
     span.instance.should.exist
     span.instance.tagName.should.equal('SPAN')
   })
 
-  it('should return the semi-public instance of a Functional Component', () => {
-    let Empty = ()=> <span />
-    let Example = c(() => <Empty name='foo' />)
-    let [_, empty] = renderAndReturnTree(<Example />)
+  IS_REACT_14 && it(
+    'should return the semi-public instance of a Functional Component', () => {
+      let Empty = ()=> <span />
+      let Example = stateful(() => <Empty name='foo' />)
+      let [_, empty] = renderAndReturnTree(<Example />)
 
-    empty.instance.should.exist
-    empty.instance.props.name.should.equal('foo')
-  })
+      empty.instance.should.exist
+      empty.instance.props.name.should.equal('foo')
+    })
 
   describe('dynamic changes in the tree', () => {
     class Dynamic extends React.Component {
@@ -95,7 +96,7 @@ describe('Node Objects', ()=> {
 
 describe('child traversal', ()=> {
   it('should iterate over instance children', () => {
-    let Example = c(()=> (
+    let Example = stateful(()=> (
       <div>
         text node
         { 500 }
@@ -137,7 +138,7 @@ describe('child traversal', ()=> {
 
 describe('instance tree traversal', () => {
   it('should find all text nodes', ()=> {
-    let Example = c(()=> <div className="foo"><span className="bar">textme!</span></div>)
+    let Example = stateful(()=> <div className="foo"><span className="bar">textme!</span></div>)
     let inst = renderIntoDocument(<Example />);
 
     let matches = findAll(inst, ({ element }) => typeof element === 'string', true)
@@ -146,8 +147,8 @@ describe('instance tree traversal', () => {
   })
 
   it('should report Empty Components but not their root `null` element', ()=> {
-    let Empty = ()=> <span />
-    let Example = c(()=>
+    let Empty = c(()=> <span />)
+    let Example = stateful(()=>
       <div className="foo">
         <Empty />
         <span className="bar">textme!</span>
@@ -165,13 +166,13 @@ describe('instance tree traversal', () => {
   })
 
   describe('DOM nodes with single child node', ()=>{
-    let Example = c(({ text })=> <div className="foo">{text}</div>)
+    let Example = stateful(({ text })=> <div className="foo">{text}</div>)
 
     describe('children that are not rendered components', () => {
       [
         ['strings', 'foo', ({ element }) => typeof element === 'string'],
         ['numbers', 9000, ({ element }) => typeof element === 'number'],
-        ['`NaN`', NaN, ({ element }) => element !== element],
+        ['`NaN`', NaN, ({ element }) => element !== element]
       ].forEach(([type, value, test]) => {
 
         it(`should report: ${type}`, () => {
@@ -191,11 +192,11 @@ describe('instance tree traversal', () => {
             ({ element: c }) => c === true ],
         ['booleans: false', false,
             ({ element: c }) => c === false ],
-        ['fragments', createFragment({ 0: <span />, 1: 'hello' }),
+        ['fragments', createFragment({ a: <span />, b: 'hello' }),
             ({ element: c }) => !c.type && typeof c === 'object'],
         ['iterables: Immutable List', List.of(<span key='0'/>, 'hello'),
             ({ element: c }) => List.isList(c)],
-        ['iterables: Immutable Map',  new IMap({ 0: <span />, 1: 'hello' }),
+        ['iterables: Immutable Map',  new IMap({ a: <span />, b: 'hello' }),
             ({ element: c }) => IMap.isMap(c)]
       ].forEach(([type, value, test]) => {
 

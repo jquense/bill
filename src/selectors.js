@@ -1,4 +1,3 @@
-import { isReactInstance, isDOMComponent, isCompositeComponent } from './utils';
 import { NODE_TYPES } from './node';
 
 export default function(compiler) {

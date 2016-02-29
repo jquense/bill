@@ -1,9 +1,8 @@
 import React from 'react';
-import { render, unmountComponentAtNode } from 'react-dom'
+import { render } from './helpers'
 import * as bill from '../src';
-import { isCompositeComponent, isDOMComponent } from '../src/utils';
 
-let { querySelectorAll: qsa, matchKind, isNode } = bill;
+let { querySelectorAll: qsa, isNode } = bill;
 
 let renderIntoDocument = (elements) =>
   render(elements , document.createElement('div'))
@@ -49,13 +48,11 @@ describe('Main exports', () => {
   })
 
   it('should registerPseudo', ()=> {
-    bill.registerPseudo('test', text => (node) => {
+    bill.registerPseudo('test', text => () => {
       expect(text).to.equal('foo')
     })
 
-    let matches = qsa('li:test(foo)',
-      <li className='foo'>foo</li>
-    )
+    qsa('li:test(foo)', <li className='foo'>foo</li>)
   })
 
   it('should registerNesting', ()=> {

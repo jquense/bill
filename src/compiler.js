@@ -78,7 +78,7 @@ export function create(options = {}) {
       selector = selector.selector
     }
 
-    let { rules, ast, multiple } = parse(selector)
+    let { rules, multiple } = parse(selector)
       , compiled;
 
     if (!multiple)
@@ -154,7 +154,7 @@ export function create(options = {}) {
   }
 }
 
-function getIdMatcher(rule, values) {
+function getIdMatcher(rule) {
   return ignoreTextNodes(({ element: { props } }) => {
     if (!props || !has(props, 'id'))
       return false
@@ -188,7 +188,7 @@ function getTagMatcher(rule, values) {
   return test
 }
 
-function getClassNameMatcher(rule, values) {
+function getClassNameMatcher(rule) {
   return ignoreTextNodes(({ element: { props } }) => {
     if (!props || !has(props, 'className'))
       return false
@@ -215,7 +215,7 @@ function getPropMatcher(rule, values) {
 
       // string value: 'input[max="5"]'
       // allow coearcion in the comparison
-      return props[attr.name] == attr.value
+      return props[attr.name] == attr.value // eslint-disable-line
     })
   )
 }
