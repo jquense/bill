@@ -189,7 +189,7 @@ a node.
 ```js
 // A simple `:text(foo)` pseudo selector
 bill.registerPseudo('text', function(value) {
-  return function (node) => {
+  return function (node) {
     return node.children
       .filter(n => n.nodeType === NODE_TYPES.TEXT)
       .every(node => node.element === value)
