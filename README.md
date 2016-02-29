@@ -65,7 +65,7 @@ matches[0].element // { type: List, props }
 
 ## API
 
-### Node
+#### Node
 
 Nodes are a light object abstraction over both instances and elements that allow for a common
 matching and traversal API between the distinct types of React objects.
@@ -94,7 +94,7 @@ potential chaining and also retrieval of the underlying DOM node if necessary (a
 
 __Note:__ Nodes only have instances when matching against a _rendered_ component tree
 
-### `querySelectorAll(selector, subject: Element|Instance|Node) -> Array<Node>`
+#### `querySelectorAll(selector, subject: Element|Instance|Node) -> Array<Node>`
 
 `querySelectorAll()` traverses a react element or instance tree searching for nodes that match the provided selector.
 As the name suggests it's analogous to `document.querySelectorAll`. The return value
@@ -125,7 +125,7 @@ let domNodes = matches.map(
   node => ReactDOM.findDOMNode(node.instance))
 ```
 
-### `matches(selector, subject: Element|Instance|Node) -> bool`
+#### `matches(selector, subject: Element|Instance|Node) -> bool`
 
 Analogous to the DOM `element.matches` method, `matches` returns true if a give element, instance or node is matched
 by the provided `selector`.
@@ -152,7 +152,7 @@ let bettyItem = bill
   .filter(node => bill.matches(':not(.foo)', node))
 ```
 
-### `selector() -> Selector`
+#### `selector() -> Selector`
 
 A function used for tagged template strings,
 
@@ -163,7 +163,7 @@ composite type.
 selector`div > ${List}[length=${5}]`
 ```
 
-### findAll(subject: Element|Instance|Node, test: (node: Node)=> bool, includeSelf? : bool) -> Array<Node>
+#### findAll(subject: Element|Instance|Node, test: (node: Node)=> bool, includeSelf? : bool) -> Array<Node>
 
 A tree traversal utility function for finding nodes that return `true` from the `testFunction`. findAll
 is similar to `ReactTestUtils.findAllInRenderedTree`, but more robust and works on both elements and instance trees.
@@ -176,11 +176,11 @@ let found = findAll(elements, function (node) {
 })
 ```
 
-### compile(selector) => (node: Node) => bool
+#### compile(selector) => (node: Node) => bool
 
 Compiles a selector string into a function that matches nodes.
 
-### registerPseudo(pseudoSelector, handlePseudo: (selector) => (node: Node) => bool)
+#### registerPseudo(pseudoSelector, handlePseudo: (selector) => (node: Node) => bool)
 
 Registers a new pseudo selector with the compiler. The second parameter is a function that will be called
 with the pseudo selector's argument (if it exists). The handler function should return a function that matches
@@ -232,7 +232,7 @@ let matches = bill.querySelectorAll('li:nextSibling(li.baz)',
 matches[0].instance // <li class='bar'>2</li>
 ```
 
-### registerNesting(nestingCombinator, handleNesting: (matcher: function) => (node: Node) => bool)
+#### registerNesting(nestingCombinator, handleNesting: (matcher: function) => (node: Node) => bool)
 
 Similar to `registerPseudo` you can also register new combinator selectors (\*, >, ~, +) using the same pattern.
 The handler function is called with the _compiled_ selector segment.
@@ -260,7 +260,7 @@ matches[0].instance // <li class='bar'>2</li>
 ```
 
 
-### `NODE_TYPES` Object
+#### `NODE_TYPES` Object
 
 Set of constants that correspond to `Node.nodeType`. Useful for filtering out types of nodes while traversing a tree.
 
@@ -268,6 +268,6 @@ Set of constants that correspond to `Node.nodeType`. Useful for filtering out ty
 - `NODE_TYPES.DOM`
 - `NODE_TYPES.TEXT`
 
-### `isNode() -> boolean`
+#### `isNode() -> boolean`
 
 Determine if an object is a Node object.
