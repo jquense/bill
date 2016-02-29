@@ -7,7 +7,7 @@ let compiler = createCompiler()
 
 selectors(compiler);
 
-function match(selector, tree, includeSelf = true) {
+function querySelectorAll(selector, tree, includeSelf = true) {
   return createNode(tree).findAll(compiler.compile(selector), includeSelf)
 }
 
@@ -17,8 +17,8 @@ function matchKind(selector, element, includeSelf) {
 }
 
 module.exports = {
-  match,
   matchKind,
+  querySelectorAll,
   findAll,
   isNode: el => el && el.$$typeof === NODE_TYPE,
   NODE_TYPES,
