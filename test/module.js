@@ -3,7 +3,7 @@ import { render, unmountComponentAtNode } from 'react-dom'
 import * as bill from '../src';
 import { isCompositeComponent, isDOMComponent } from '../src/utils';
 
-let { match, matchKind, isNode } = bill;
+let { querySelectorAll: qsa, matchKind, isNode } = bill;
 
 let renderIntoDocument = (elements) =>
   render(elements , document.createElement('div'))
@@ -16,25 +16,8 @@ describe('Main exports', () => {
     let Example = c(()=> <div className="foo"><span className="bar">textme!</span></div>)
     let inst = renderIntoDocument(<Example />);
 
-    match('span.bar', inst)
+    qsa('span.bar', inst)
       .every(isNode)
-      .should.equal(true)
-  })
-
-  it('should match and return return public instances', ()=> {
-    let Example = c(()=> <div className="foo"><span className="bar">textme!</span></div>)
-    let inst = renderIntoDocument(<Example />);
-
-    matchKind('span.bar', inst)
-      .every(node => isCompositeComponent(node) || isDOMComponent(node))
-      .should.equal(true)
-  })
-
-  it('should match and return return elements', ()=> {
-    let elements = (<div className="foo"><span className="bar">textme!</span></div>);
-
-    matchKind('span.bar', elements)
-      .every(React.isValidElement)
       .should.equal(true)
   })
 
@@ -45,12 +28,16 @@ describe('Main exports', () => {
   })
 
   it('should registerPseudo selector', ()=> {
-    bill.registerPseudo('nextSibling', test => (node) => {
-      node = node.nextSibling
-      return !!node && test(node)
+    bill.registerPseudo('nextSibling', (selector) => {
+      let test = bill.compile(selector);
+
+      return (node) => {
+        node = node.nextSibling
+        return !!node && test(node)
+      }
     })
 
-    let matches = bill.match('li:nextSibling(li.baz)',
+    let matches = qsa('li:nextSibling(li.baz)',
       <ul>
         <li className='foo'>1</li>
         <li className='bar'>2</li>
@@ -62,11 +49,11 @@ describe('Main exports', () => {
   })
 
   it('should registerPseudo', ()=> {
-    bill.registerPseudo('test', false, text => (node) => {
+    bill.registerPseudo('test', text => (node) => {
       expect(text).to.equal('foo')
     })
 
-    let matches = bill.match('li:test(foo)',
+    let matches = qsa('li:test(foo)',
       <li className='foo'>foo</li>
     )
   })
@@ -77,7 +64,7 @@ describe('Main exports', () => {
       return !!(node && test(node))
     })
 
-    let matches = bill.match('li.baz ! li',
+    let matches = qsa('li.baz ! li',
       <ul>
         <li className='foo'>1</li>
         <li className='bar'>2</li>

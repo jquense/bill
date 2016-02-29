@@ -8,14 +8,20 @@ export default function(compiler) {
       ()=> node => node.nodeType === NODE_TYPES[type])
   })
 
-  compiler.registerPseudo('has', test => node => {
-    let matches = node.findAll(test)
-    return !!matches.length
+  compiler.registerPseudo('has', (selector) => {
+    let test = compiler.compile(selector);
+    return node => {
+      let matches = node.findAll(test)
+      return !!matches.length
+    }
   })
 
-  compiler.registerPseudo('not', test => node => {
-    let matches = test(node)
-    return !matches
+  compiler.registerPseudo('not', (selector) => {
+    let test = compiler.compile(selector);
+    return node => {
+      let matches = test(node)
+      return !matches
+    }
   })
 
   compiler.registerPseudo('first-child', () => node => {

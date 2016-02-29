@@ -197,7 +197,7 @@ describe('create compiler', ()=> {
 
     ;(() => compile(selector)).should.not.throw()
 
-    selector.match(/^sub_____\d\.foo$/).should.be.ok
+    selector.match(/^sub_____\d+\.foo$/).should.be.ok
   })
 
   it('should create valid selector as a normal function call', ()=>{
@@ -206,7 +206,27 @@ describe('create compiler', ()=> {
 
     ;(() => compile(selector)).should.not.throw()
 
-    selector.match(/^sub_____\d\.foo$/).should.be.ok
+    selector.match(/^sub_____\d+\.foo$/).should.be.ok
+  })
+
+  it('should create cacheable interpolated selectors', ()=>{
+    let { selector: firstSelector } = s`${()=>{}}.foo[max=${new Date()}]`;
+    let { selector: secondSelector } = s`${()=>{}}.foo[max=${new Date()}]`;
+
+    firstSelector.should.equal(secondSelector)
+  })
+
+  it('should infer inner selector', (done)=> {
+    let sel = s`${()=>{}}:foo([max=${new Date()}])`;
+
+    registerPseudo('foo', innerValue => {
+      expect(innerValue.selector).to.exist
+      expect(innerValue.valueMap).to.exist
+      Object.keys(innerValue.valueMap).length.should.equal(1)
+      done()
+    })
+
+    compile(sel)
   })
 
   it('should use == on non interpolated values', ()=>{

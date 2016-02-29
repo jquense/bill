@@ -10,8 +10,8 @@ describe('Selecting', ()=> {
     element: bill,
     instance: {
       ...bill,
-      match(selector, root){
-        return bill.match(selector, render(root, mountPoint))
+      querySelectorAll(selector, root){
+        return bill.querySelectorAll(selector, render(root, mountPoint))
       },
 
       beforeEach(){
@@ -21,7 +21,7 @@ describe('Selecting', ()=> {
   };
 
   each(types, (details, key) => {
-    let { match, selector: s } = details;
+    let { querySelectorAll: match, selector: s } = details;
 
     let isInstanceTest = key === 'instance';
 

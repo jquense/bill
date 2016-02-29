@@ -1,6 +1,11 @@
 import has from 'lodash/object/has';
 import React from 'react';
 
+let isPrimitive = value => {
+  let typ = typeof value;
+  return value === null || ['string', 'number'].indexOf(typ) !== -1
+}
+
 export let isValidPlainElement =
   element => typeof element === 'object' && element != null && has(element, 'type');
 
@@ -25,7 +30,31 @@ export let isReactInstance = obj =>
   has(obj, '_rootNodeID');
 
 
-export function legacySelector(...args){
+export function createSelector(prefix) {
+  return selector;
+
+  function selector(strings, ...values) {
+    if (!Array.isArray(strings))
+      [ strings, values ] = legacySelector.apply(null, [strings].concat(values));
+
+    let valueMap = Object.create(null);
+
+    let selector = strings.reduce((rslt, string, idx) => {
+      let noValue = idx >= values.length
+        , value = values[idx]
+        , strValue = '' + value;
+
+      if (!noValue && !isPrimitive(value))
+        valueMap[strValue = (prefix + idx)] = value;
+
+      return rslt + string + (noValue ? '' : strValue)
+    }, '')
+
+    return { selector, valueMap }
+  }
+}
+
+function legacySelector(...args){
   let strings = []
     , values = [];
 

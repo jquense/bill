@@ -26,6 +26,7 @@ module.exports = function (config) {
     },
 
     webpack: {
+      devtool: 'cheap-module-source-map',
       entry: './test/index.js',
       module: {
         loaders: [{ test: /\.js$/, loader: 'babel', exclude: /node_modules/ }]
