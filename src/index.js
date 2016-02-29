@@ -11,10 +11,11 @@ function querySelectorAll(selector, tree, includeSelf = true) {
   return createNode(tree).findAll(compiler.compile(selector), includeSelf)
 }
 
+function matches(selector, node) {
+  return compiler.compile(selector)(node)
 }
 
 module.exports = {
-  matchKind,
   matches,
   querySelectorAll,
   findAll,
