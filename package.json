@@ -63,7 +63,6 @@
     "mocha": "^2.3.3",
     "mt-changelog": "^0.6.2",
     "react": "^0.13.0 || ^0.14.0",
-    "semver": "^5.1.0",
     "sinon": "^1.17.1",
     "sinon-chai": "^2.8.0",
     "trim-package-json": "^1.0.0",
@@ -73,6 +72,7 @@
     "css-selector-parser": "^1.1.0",
     "escape-regexp": "0.0.1",
     "fn-name": "^2.0.1",
-    "lodash": "^3.10.1"
+    "lodash": "^3.10.1",
+    "semver": "^5.1.0"
   }
 }
