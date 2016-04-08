@@ -37,7 +37,10 @@ export let isCompositeComponent = inst => !isDOMComponent(inst) || inst === null
 export let isReactInstance = obj =>
   obj != null &&
   has(obj, '_currentElement') &&
-  has(obj, '_mountIndex');
+  (has(obj, '_instance')   ||
+   has(obj, '_mountOrder') || 
+   has(obj, '_nativeNode') ||
+   has(obj, '_rootNodeID'));
 
 export let getRenderedChildren = ifDef({
 
