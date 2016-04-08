@@ -1,5 +1,5 @@
 import React from 'react';
-import { IS_REACT_14 } from '../src/compat';
+import { IS_REACT_13 } from '../src/compat';
 import { render, createFragment, component as c } from './helpers'
 import { findAll, eachChild, createNode } from '../src/node';
 import { List, Map as IMap } from 'immutable';
@@ -32,7 +32,7 @@ describe('Node Objects', ()=> {
     span.instance.tagName.should.equal('SPAN')
   })
 
-  IS_REACT_14 && it(
+  !IS_REACT_13 && it(
     'should return the semi-public instance of a Functional Component', () => {
       let Empty = ()=> <span />
       let Example = stateful(() => <Empty name='foo' />)
@@ -84,7 +84,7 @@ describe('Node Objects', ()=> {
       instance.show()
 
       let node = createNode(instance)
-        , children = node.children[0].children
+      let children = node.children[0].children
 
       instance.hide()
 

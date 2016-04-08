@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactInstanceMap from 'react/lib/ReactInstanceMap';
 import findIndex from 'lodash/array/findIndex';
+import { ifDef } from './compat';
 import {
     isDomElement, isCompositeElement
   , isTextElement, isReactInstance
-  , isDOMComponent, getRenderedChildren } from './utils';
+  , isDOMComponent, getRenderedChildren, getInstanceFromNode } from './utils';
 
 export const NODE_TYPE = (typeof Symbol === 'function' && Symbol.for && Symbol.for('bill.node')) || 0xadc3;
 
@@ -19,27 +20,26 @@ function indexOfNode(arr, instOrElement) {
     return node.privateInstance === instOrElement || node.element === instOrElement
   })
 }
-function isStale(privateInstance) {
-  return privateInstance && privateInstance._rootNodeID === null
-}
 
-// function trimStale(nodes) {
-//   for (var i = nodes.length - 1; i--;)
-//     if (isStale(nodes[i].privateInstance))
-//       nodes.splice(i, 1);
-// }
 
-function instanceFromNativeNode(subject) {
-  if (subject._reactInternalComponent)
-    return subject._reactInternalComponent
+let isStale = ifDef({
+  '>=15': function (privateInstance) {
+    if (!privateInstance) return false
+    if (privateInstance._nativeNode !== null)
+      return false
 
-  // TODO: react 0.15.0 is going to break this
-  // need to use ReactDOMComponentTree.getInstanceFromNode
-}
+    return privateInstance._renderedComponent == null
+  },
+  '*': function (privateInstance) {
+    return privateInstance && privateInstance._rootNodeID === null
+  }
+})
+
+
 
 function normalizeSubject(subject) {
   return subject && !subject.getPublicInstance
-    ? instanceFromNativeNode(subject) || ReactInstanceMap.get(subject) || subject
+    ? getInstanceFromNode(subject) || ReactInstanceMap.get(subject) || subject
     : subject
 }
 

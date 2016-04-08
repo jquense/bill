@@ -1,19 +1,26 @@
 import React from 'react';
 import { create as createFragment } from 'react/lib/ReactFragment';
-import { IS_REACT_14 } from '../src/compat';
+import { ifDef } from '../src/compat';
+
+let ReactDOM;
+try {
+  ReactDOM = require('react/lib/ReactDOM')
+}
+catch (err){} //eslint-disable-line
 
 export { createFragment };
 
-export function component (fn) {
-  return IS_REACT_14 ? fn
-    : React.createClass({
-        render(){
-          return fn(this.props, this.context)
-        }
-    })
-}
+export let component  = ifDef({
+  '<0.14.0': fn => React.createClass({
+      render(){
+        return fn(this.props, this.context)
+      }
+  }),
+  '*': fn => fn
+})
 
 // IT'S FINE; better then juggling around react-dom
-export let render = IS_REACT_14
-  ? React.__SECRET_DOM_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.render
-  : React.render;
+export let render = ifDef({
+  '>=0.14.0': ReactDOM.render,
+  '*': React.render
+});

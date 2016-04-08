@@ -1,5 +1,11 @@
 import has from 'lodash/object/has';
-import { IS_REACT_14 } from './compat';
+import { ifDef } from './compat';
+let ReactDOMComponentTree;
+
+try {
+  ReactDOMComponentTree = require('react/lib/ReactDOMComponentTree')
+}
+catch (err){} //eslint-disable-line
 
 let isPrimitive = value => {
   let typ = typeof value;
@@ -19,9 +25,11 @@ export let isCompositeElement =
   element => !isTextElement(element) && typeof element.type === 'function'
 
 
-export let isDOMComponent = IS_REACT_14
-  ? inst => !!(inst && inst.nodeType === 1 && inst.tagName)
-  : inst => !!(inst && inst.tagName && inst.getDOMNode );
+export let isDOMComponent = ifDef({
+  '<0.14.0': inst => !!(inst && inst.tagName && inst.getDOMNode),
+
+  '*': inst => !!(inst && inst.nodeType === 1 && inst.tagName)
+});
 
 export let isCompositeComponent = inst => !isDOMComponent(inst) || inst === null
     || typeof inst.render === 'function' && typeof inst.setState === 'function';
@@ -29,17 +37,28 @@ export let isCompositeComponent = inst => !isDOMComponent(inst) || inst === null
 export let isReactInstance = obj =>
   obj != null &&
   has(obj, '_currentElement') &&
-  has(obj, '_rootNodeID');
+  has(obj, '_mountIndex');
 
-export let getRenderedChildren = IS_REACT_14
-  ? (inst => inst._renderedChildren || inst._renderedComponent)
-  : (inst, pInst) => {
+export let getRenderedChildren = ifDef({
+
+  '<0.14.0': (inst, pInst) => {
     let child = inst._renderedComponent;
     return isDOMComponent(pInst)
       ? child._renderedChildren
       : child;
-  }
+  },
 
+  '*': inst => inst._renderedChildren || inst._renderedComponent
+});
+
+export let getInstanceFromNode = ifDef({
+  '>=15': subject => ReactDOMComponentTree.getInstanceFromNode(subject),
+
+  '*': subject => {
+    if (subject._reactInternalComponent)
+      return subject._reactInternalComponent
+  }
+})
 
 export function createSelector(prefix) {
   return selector;
