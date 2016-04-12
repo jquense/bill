@@ -42,6 +42,15 @@ matches.length     // 2
 matches[0].element // { type: List, props }
 ```
 
+### React Compatibility
+
+> WARNING: mising module 'react/lib/ReactDOMComponentTree'
+
+bill supports the latest React and back to v0.13.0, because a librray like this involves the use of private API's, maintaining support across major versions of React is _harder_ than normal. In particular we need to do dynamic requires to internal apis, which makes bundlers like Webpack warning about missing modules, and bundling with a less smart bundler hard.
+
+Don't worry though they are missing because the version of React you are using doesn't have them, and thats ok, bill knows how to 
+do its work on each supported version.
+
 ### Supported
 
 - id: `#foo`
