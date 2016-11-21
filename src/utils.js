@@ -35,6 +35,7 @@ export let isReactInstance = obj =>
   (has(obj, '_instance')   ||
    has(obj, '_mountOrder') ||
    has(obj, '_nativeNode') ||
+   has(obj, '_hostNode') ||
    has(obj, '_rootNodeID'));
 
 export let getRenderedChildren = ifDef({

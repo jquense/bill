@@ -1,12 +1,12 @@
 {
   "name": "bill",
-  "version": "3.2.4",
+  "version": "3.2.5",
   "description": "css selectors for React Elements",
   "main": "lib/index.js",
   "scripts": {
     "tdd": "karma start",
-    "test": "karma start --single-run",
-    "test-all": "npm run react:13 && npm test && npm run react:14 && npm test && npm run react:15.3 && npm test && npm run react:15.4 && npm test",
+    "test-current": "karma start --single-run",
+    "test": "npm run react:13 && npm run test-current && npm run react:14 && npm run test-current && npm run react:15.3 && npm run test-current && npm run react:15.4 && npm run test-current",
     "lint": "eslint src",
     "react:clean": "rimraf node_modules/react node_modules/react-dom",
     "react:13": "npm run react:clean && npm i react@0.13.x",
