@@ -1,6 +1,6 @@
 {
   "name": "bill",
-  "version": "3.2.2",
+  "version": "3.2.3",
   "description": "css selectors for React Elements",
   "main": "lib/index.js",
   "scripts": {
@@ -13,10 +13,8 @@
     "react:14": "npm run react:clean && npm i react@0.14.x && npm i react-dom@0.14.x",
     "react:15.3": "npm run react:clean && npm i react@15.3.x && npm i react-dom@15.3.x",
     "react:15.4": "npm run react:clean && npm i react@15.4.x && npm i react-dom@15.4.x",
-    "build": "babel src --out-dir lib && cpy ./README.md ./lib & trim-pkg ./lib -m index.js",
-    "patch": "npm run test-all && npm version patch && npm run build && cd ./lib && npm publish",
-    "minor": "npm run test-all && npm version minor && npm run build && cd ./lib && npm publish",
-    "major": "npm run test-all && npm version major && npm run build && cd ./lib && npm publish"
+    "build": "babel src --out-dir lib && cpy ./README.md ./lib",
+    "release": "release"
   },
   "repository": {
     "type": "git",
@@ -64,9 +62,9 @@
     "mocha": "^2.3.3",
     "mt-changelog": "^0.6.2",
     "react": "^0.13.0 || ^0.14.0",
+    "release-script": "^1.0.2",
     "sinon": "^1.17.1",
     "sinon-chai": "^2.8.0",
-    "trim-package-json": "^1.0.0",
     "webpack": "^1.12.2"
   },
   "dependencies": {
@@ -75,5 +73,9 @@
     "fn-name": "^2.0.1",
     "lodash": "^3.10.1",
     "semver": "^5.1.0"
+  },
+
+  "release-script": {
+    "altPkgRootFolder": "lib"
   }
 }
