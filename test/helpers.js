@@ -2,11 +2,16 @@ import React from 'react';
 import { create as createFragment } from 'react/lib/ReactFragment';
 import { ifDef } from '../src/compat';
 
-let ReactDOM;
+let ReactDOM = {};
 try {
-  ReactDOM = require('react/lib/ReactDOM')
+  ReactDOM = require('react-dom')
 }
-catch (err){} //eslint-disable-line
+catch (err){
+  try {
+    ReactDOM = require('react/lib')
+  }
+  catch (err){} //eslint-disable-line
+}
 
 export { createFragment };
 

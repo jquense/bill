@@ -1,11 +1,6 @@
 import has from 'lodash/object/has';
 import { ifDef } from './compat';
-let ReactDOMComponentTree;
-
-try {
-  ReactDOMComponentTree = require('react/lib/ReactDOMComponentTree')
-}
-catch (err){} //eslint-disable-line
+import { getInstanceFromNode } from './DOMNodeUtils'
 
 let isPrimitive = value => {
   let typ = typeof value;
@@ -38,7 +33,7 @@ export let isReactInstance = obj =>
   obj != null &&
   has(obj, '_currentElement') &&
   (has(obj, '_instance')   ||
-   has(obj, '_mountOrder') || 
+   has(obj, '_mountOrder') ||
    has(obj, '_nativeNode') ||
    has(obj, '_rootNodeID'));
 
@@ -54,14 +49,13 @@ export let getRenderedChildren = ifDef({
   '*': inst => inst._renderedChildren || inst._renderedComponent
 });
 
-export let getInstanceFromNode = ifDef({
-  '>=15': subject => ReactDOMComponentTree.getInstanceFromNode(subject),
+export { getInstanceFromNode }
 
-  '*': subject => {
-    if (subject._reactInternalComponent)
-      return subject._reactInternalComponent
+export let InstanceMap = {
+  get(key) {
+    return key._reactInternalInstance;
   }
-})
+};
 
 export function createSelector(prefix) {
   return selector;

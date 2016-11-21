@@ -1,6 +1,6 @@
 import React from 'react';
 import { IS_REACT_13 } from '../src/compat';
-import { render, createFragment, component as c } from './helpers'
+import { render, component as c } from './helpers'
 import { findAll, eachChild, createNode } from '../src/node';
 import { List, Map as IMap } from 'immutable';
 
@@ -192,8 +192,6 @@ describe('instance tree traversal', () => {
             ({ element: c }) => c === true ],
         ['booleans: false', false,
             ({ element: c }) => c === false ],
-        ['fragments', createFragment({ a: <span />, b: 'hello' }),
-            ({ element: c }) => !c.type && typeof c === 'object'],
         ['iterables: Immutable List', List.of(<span key='0'/>, 'hello'),
             ({ element: c }) => List.isList(c)],
         ['iterables: Immutable Map',  new IMap({ a: <span />, b: 'hello' }),

@@ -1,10 +1,11 @@
 import React from 'react';
-import ReactInstanceMap from 'react/lib/ReactInstanceMap';
+
 import findIndex from 'lodash/array/findIndex';
 import { ifDef } from './compat';
 import {
     isDomElement, isCompositeElement
   , isTextElement, isReactInstance
+  , InstanceMap
   , isDOMComponent, getRenderedChildren, getInstanceFromNode } from './utils';
 
 export const NODE_TYPE = (typeof Symbol === 'function' && Symbol.for && Symbol.for('bill.node')) || 0xadc3;
@@ -23,6 +24,13 @@ function indexOfNode(arr, instOrElement) {
 
 
 let isStale = ifDef({
+  '>=15.2': function (privateInstance) {
+    if (!privateInstance) return false
+    if (privateInstance._hostNode !== null)
+      return false
+
+    return privateInstance._renderedChildren == null
+  },
   '>=15': function (privateInstance) {
     if (!privateInstance) return false
     if (privateInstance._nativeNode !== null)
@@ -39,7 +47,7 @@ let isStale = ifDef({
 
 function normalizeSubject(subject) {
   return subject && !subject.getPublicInstance
-    ? getInstanceFromNode(subject) || ReactInstanceMap.get(subject) || subject
+    ? getInstanceFromNode(subject) || InstanceMap.get(subject) || subject
     : subject
 }
 
