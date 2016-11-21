@@ -1,6 +1,6 @@
 {
   "name": "bill",
-  "version": "3.2.3",
+  "version": "3.2.4",
   "description": "css selectors for React Elements",
   "main": "lib/index.js",
   "scripts": {
@@ -74,7 +74,6 @@
     "lodash": "^3.10.1",
     "semver": "^5.1.0"
   },
-
   "release-script": {
     "altPkgRootFolder": "lib"
   }
